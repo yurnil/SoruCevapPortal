@@ -1,0 +1,6 @@
+@SoruCevapPortal.API_HostAddress = http://localhost:5215
+
+GET {{SoruCevapPortal.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
