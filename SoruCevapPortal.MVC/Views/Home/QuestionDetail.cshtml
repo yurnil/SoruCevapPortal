@@ -84,17 +84,17 @@
                     <span id="detayKategori" class="tag-badge"><i class="fas fa-tag me-1"></i> Yükleniyor...</span>
 
                     <div class="text-muted fw-bold d-flex align-items-center" style="font-size: 0.9rem;">
-                        <i class="far fa-eye me-2"></i> 1.2K Görüntülenme
+                        <i class="far fa-eye me-2"></i> <span id="detayGoruntulenme">Yükleniyor...</span>
                     </div>
                 </div>
 
                 <h1 id="detayBaslik" class="question-title mb-4">Soru yükleniyor...</h1>
 
                 <div class="d-flex align-items-center mb-4 pb-4 border-bottom">
-                    <img src="https://ui-avatars.com/api/?name=Kullanici&background=random" class="rounded-circle me-3" width="48" height="48">
+                    <img id="detayYazarResim" src="https://ui-avatars.com/api/?name=Yükleniyor&background=random" class="rounded-circle me-3" width="48" height="48">
                     <div>
-                        <div class="fw-bold text-dark" style="font-size: 1.05rem;">Topluluk Üyesi</div>
-                        <div class="text-muted" style="font-size: 0.85rem;"><i class="far fa-clock me-1"></i> Yakın zamanda soruldu</div>
+                        <div id="detayYazarAd" class="fw-bold text-dark" style="font-size: 1.05rem;">Yükleniyor...</div>
+                        <div class="text-muted" style="font-size: 0.85rem;"><i class="far fa-clock me-1"></i> <span id="detayTarih">Yükleniyor...</span></div>
                     </div>
                 </div>
 
@@ -195,9 +195,26 @@
             url: "https://localhost:7152/api/Questions/" + tiklananSoruId,
             type: "GET",
             success: function (soruData) {
+                var gelenTarih = soruData.createdDate || soruData.createdAt || soruData.date;
+                var tarih = "Tarih belirtilmemiş";
+
+                if (gelenTarih) {
+                    tarih = new Date(gelenTarih).toLocaleString('tr-TR', {
+                        year: 'numeric', month: 'long', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                }
+
                 $("#detayBaslik").text(soruData.title);
                 $("#detayIcerik").text(soruData.content);
-                $("#detayKategori").text("Kategori ID: " + soruData.categoryId);
+                $("#detayKategori").html(`<i class="fas fa-tag me-1"></i> Kategori ID: ${soruData.categoryId}`);
+
+                $("#detayGoruntulenme").text(`${soruData.viewCount || 0} Görüntülenme`);
+                $("#detayYazarAd").text(soruData.authorName || 'Anonim');
+                $("#detayTarih").text(tarih);
+
+                var avatarIsim = soruData.authorName ? soruData.authorName.replace(' ', '+') : 'Kullanici';
+                $("#detayYazarResim").attr("src", `https://ui-avatars.com/api/?name=${avatarIsim}&background=random`);
             },
             error: function () {
                 $("#detayBaslik").text("Soru Bulunamadı");
@@ -213,10 +230,15 @@
                     var cevapHtml = "";
                     $.each(cevaplarData, function (index, cevap) {
 
-                        var tarih = new Date(cevap.createdDate).toLocaleString('tr-TR', {
-                            year: 'numeric', month: 'long', day: 'numeric',
-                            hour: '2-digit', minute: '2-digit'
-                        });
+                        var gelenCevapTarihi = cevap.createdDate || cevap.createdAt || cevap.date;
+                        var tarih = "Tarih belirtilmemiş";
+                        if (gelenCevapTarihi) {
+                            tarih = new Date(gelenCevapTarihi).toLocaleString('tr-TR', {
+                                year: 'numeric', month: 'long', day: 'numeric',
+                                hour: '2-digit', minute: '2-digit'
+                            });
+                        }
+
                         var adSoyad = "Anonim Kullanıcı";
                         var basHarf = "A";
 
@@ -333,7 +355,6 @@
                 },
                 error: function (xhr) {
                     console.log("Sunucu Hatası Detayı:", xhr);
-
                     var hataSebebi = xhr.responseText ? xhr.responseText : ("HTTP Durum Kodu: " + xhr.status);
                     alert("API bu güncellemeyi şu sebeple reddetti:\n\n" + hataSebebi);
                 }
