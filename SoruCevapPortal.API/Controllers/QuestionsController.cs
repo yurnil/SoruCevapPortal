@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore; 
 using SoruCevapPortal.API.DTOs;
 using SoruCevapPortal.API.Models;
 using SoruCevapPortal.API.Repositories;
@@ -14,25 +15,40 @@ namespace SoruCevapPortal.API.Controllers
     {
         private readonly IRepository<Question> _questionRepository;
 
-
         public QuestionsController(IRepository<Question> questionRepository)
         {
             _questionRepository = questionRepository;
         }
 
-
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllQuestions()
         {
-            var questions = await _questionRepository.GetAllAsync();
+            var questions = await _questionRepository.Table
+                .Include(q => q.AppUser)
+                .Include(q => q.Category)
+                .Include(q => q.Answers)
+                .Select(q => new
+                {
+                    id = q.Id,
+                    title = q.Title,
+                    content = q.Content,
+                    viewCount = q.ViewCount,
+                    voteCount = q.VoteCount,
+                    answerCount = q.Answers.Count, 
+                    authorName = q.AppUser != null ? q.AppUser.FirstName + " " + q.AppUser.LastName : "Anonim",
+                    categoryId = q.CategoryId,
+                    categoryName = q.Category != null ? q.Category.Name : "Bilinmiyor",
+                    appUserId = q.AppUserId
+                })
+                .ToListAsync();
+
             return Ok(questions);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateQuestion([FromBody] QuestionCreateDto model)
         {
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var newQuestion = new Question
@@ -40,8 +56,9 @@ namespace SoruCevapPortal.API.Controllers
                 Title = model.Title,
                 Content = model.Content,
                 CategoryId = model.CategoryId,
-                AppUserId = userId, 
+                AppUserId = userId,
                 ViewCount = 0,
+                VoteCount = 0,
                 IsResolved = false
             };
 
@@ -54,15 +71,35 @@ namespace SoruCevapPortal.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetQuestionById(int id)
         {
-            var question = await _questionRepository.GetByIdAsync(id);
+            var question = await _questionRepository.Table
+                .Include(q => q.AppUser)
+                .Include(q => q.Category)
+                .Include(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Id == id);
 
             if (question == null)
                 return NotFound(new { message = "Böyle bir soru bulunamadı." });
 
-            return Ok(question);
-        
+            question.ViewCount += 1;
+            _questionRepository.Update(question);
+
+            var result = new
+            {
+                id = question.Id,
+                title = question.Title,
+                content = question.Content,
+                viewCount = question.ViewCount,
+                voteCount = question.VoteCount,
+                answerCount = question.Answers.Count,
+                authorName = question.AppUser != null ? question.AppUser.FirstName + " " + question.AppUser.LastName : "Anonim",
+                categoryId = question.CategoryId,
+                categoryName = question.Category != null ? question.Category.Name : "Bilinmiyor",
+                appUserId = question.AppUserId
+            };
+
+            return Ok(result);
         }
-       
+
         [HttpGet("category/{categoryId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetQuestionsByCategory(int categoryId)
@@ -71,7 +108,6 @@ namespace SoruCevapPortal.API.Controllers
             return Ok(questions);
         }
 
-        
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateQuestion(int id, [FromBody] QuestionCreateDto model)
         {
@@ -86,7 +122,6 @@ namespace SoruCevapPortal.API.Controllers
             return Ok(new { message = "Soru başarıyla güncellendi." });
         }
 
-        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestion(int id)
         {

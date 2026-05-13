@@ -5,6 +5,7 @@
         public string Title { get; set; }
         public string Content { get; set; }
         public int ViewCount { get; set; } = 0;
+        public int VoteCount { get; set; } = 0;
         public bool IsResolved { get; set; } = false;
 
         public string AppUserId { get; set; }
