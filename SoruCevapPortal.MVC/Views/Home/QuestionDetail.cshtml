@@ -80,9 +80,7 @@
         <div class="col-12 col-lg-8">
 
             <div class="detail-card mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <span id="detayKategori" class="tag-badge"><i class="fas fa-tag me-1"></i> Yükleniyor...</span>
-
+                <div class="d-flex justify-content-end align-items-center mb-4">
                     <div class="text-muted fw-bold d-flex align-items-center" style="font-size: 0.9rem;">
                         <i class="far fa-eye me-2"></i> <span id="detayGoruntulenme">Yükleniyor...</span>
                     </div>
@@ -207,7 +205,6 @@
 
                 $("#detayBaslik").text(soruData.title);
                 $("#detayIcerik").text(soruData.content);
-                $("#detayKategori").html(`<i class="fas fa-tag me-1"></i> Kategori ID: ${soruData.categoryId}`);
 
                 $("#detayGoruntulenme").text(`${soruData.viewCount || 0} Görüntülenme`);
                 $("#detayYazarAd").text(soruData.authorName || 'Anonim');
