@@ -62,6 +62,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end text-small shadow border-0 mt-2" aria-labelledby="dropdownUser" style="border-radius: 10px;">
                             <li><a class="dropdown-item fw-bold text-secondary" href="/Home/Profile">Profilim</a></li>
+                            <li id="adminPanelLink" class="d-none"><a class="dropdown-item fw-bold text-primary" href="/Admin/Index"><i class="fas fa-crown me-2"></i> Yönetici Paneli</a></li>
                             <li><a class="dropdown-item fw-bold text-secondary" href="/Home/Profile">Ayarlar</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item fw-bold text-danger" href="#" id="btnLogout" style="cursor:pointer;">Çıkış Yap</a></li>
@@ -142,6 +143,11 @@
                 $("#guestMenu").addClass("d-none");
 
                 var payload = parseJwt(token);
+        var role = payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || payload.role;
+
+        if (role === "Admin" || role === "admin") {
+            $("#adminPanelLink").removeClass("d-none");
+        }
                 if (payload) {
                     var userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || payload.sub || payload.Id || payload.id;
                     var name = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || payload.unique_name || "Kullanıcı";

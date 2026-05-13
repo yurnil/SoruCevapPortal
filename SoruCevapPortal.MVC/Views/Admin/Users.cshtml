@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Kullanıcı Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold py-3 mb-0"><span class="text-muted fw-light">Sistem Yönetimi /</span> Kullanıcılar</h4>
+</div>
+
+<div class="card">
+    <h5 class="card-header">Kayıtlı Kullanıcı Listesi</h5>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Kullanıcı Adı</th>
+                    <th>Ad Soyad</th>
+                    <th>E-Posta</th>
+                    <th>Durum</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <tr><td colspan="5" class="text-center py-4">Kullanıcılar yükleniyor...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var token = localStorage.getItem("token");
+        if (!token) { window.location.href = "/Auth/Login"; return; }
+
+        function kullanicilariGetir() {
+            $.ajax({
+                url: "https://localhost:7152/api/Users",
+                type: "GET",
+                headers: { "Authorization": "Bearer " + token },
+                success: function (data) {
+                    var html = "";
+                    if (data.length === 0) {
+                        html = '<tr><td colspan="5" class="text-center text-muted">Kullanıcı bulunamadı.</td></tr>';
+                    } else {
+                        $.each(data, function (index, user) {
+                            html += `
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://ui-avatars.com/api/?name=${user.fullName.replace(' ', '+')}&background=random" class="rounded-circle me-3" width="32" height="32">
+                                            <strong>@@${user.userName}</strong>
+                                        </div>
+                                    </td>
+                                    <td>${user.fullName}</td>
+                                    <td>${user.email}</td>
+                                    <td><span class="badge bg-label-success">Aktif</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-danger" onclick="kullaniciSil('${user.id}')"><i class="bx bx-user-x me-1"></i> Uzaklaştır</button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    }
+                    $("#usersTableBody").html(html);
+                },
+                error: function () {
+                    $("#usersTableBody").html('<tr><td colspan="5" class="text-center text-danger">Yetkiniz yok veya veriler çekilemedi.</td></tr>');
+                }
+            });
+        }
+
+        kullanicilariGetir();
+
+        window.kullaniciSil = function (id) {
+            if (confirm("Bu kullanıcıyı sistemden tamamen silmek istediğinize emin misiniz?")) {
+                $.ajax({
+                    url: "https://localhost:7152/api/Users/" + id,
+                    type: "DELETE",
+                    headers: { "Authorization": "Bearer " + token },
+                    success: function () {
+                        alert("Kullanıcı başarıyla silindi.");
+                        kullanicilariGetir();
+                    },
+                    error: function () {
+                        alert("Silme işlemi başarısız oldu.");
+                    }
+                });
+            }
+        };
+    });
+</script>

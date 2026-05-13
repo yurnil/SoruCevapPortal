@@ -8,7 +8,6 @@ namespace SoruCevapPortal.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class CategoriesController : ControllerBase
     {
         private readonly IRepository<Category> _categoryRepository;
@@ -20,55 +19,32 @@ namespace SoruCevapPortal.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetCategories()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(await _categoryRepository.GetAllAsync());
+            var categories = await _categoryRepository.GetAllAsync();
+            return Ok(categories);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDto model)
+        [Authorize(Roles = "Admin")] 
+        public async Task<IActionResult> Create([FromBody] CategoryCreateDto model)
         {
-            var category = new Category
-            {
-                Name = model.Name,
-                Description = model.Description
-            };
-            await _categoryRepository.AddAsync(category);
+            if (string.IsNullOrWhiteSpace(model.Name)) return BadRequest("Kategori adı boş olamaz.");
+
+            var newCategory = new Category { Name = model.Name };
+            await _categoryRepository.AddAsync(newCategory);
             return Ok(new { message = "Kategori başarıyla eklendi!" });
         }
-        
-        [HttpGet("{id}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetCategoryById(int id)
-        {
-            var category = await _categoryRepository.GetByIdAsync(id);
-            if (category == null) return NotFound(new { message = "Kategori bulunamadı." });
-            return Ok(category);
-        }
 
-        
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryCreateDto model)
-        {
-            var category = await _categoryRepository.GetByIdAsync(id);
-            if (category == null) return NotFound(new { message = "Kategori bulunamadı." });
-
-            category.Name = model.Name;
-            category.Description = model.Description;
-
-            _categoryRepository.Update(category);
-            return Ok(new { message = "Kategori güncellendi." });
-        }
-
-        
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        [Authorize(Roles = "Admin")] 
+        public async Task<IActionResult> Delete(int id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
             if (category == null) return NotFound();
 
             _categoryRepository.Remove(category);
-            return Ok(new { message = "Kategori silindi." });
+            return Ok(new { message = "Kategori silindi!" });
         }
     }
 }

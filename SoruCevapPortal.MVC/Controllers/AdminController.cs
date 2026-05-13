@@ -12,6 +12,14 @@ namespace SoruCevapPortal.MVC.Controllers
         {
             return View();
         }
+        public IActionResult Questions()
+        {
+            return View();
+        }
+        public IActionResult Users()
+        {
+            return View();
+        }
     }
 
 }

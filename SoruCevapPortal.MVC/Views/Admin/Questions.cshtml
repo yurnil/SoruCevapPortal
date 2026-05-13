@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["Title"] = "Soru Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold py-3 mb-0"><span class="text-muted fw-light">Sistem Yönetimi /</span> Sorular & Cevaplar</h4>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Tüm Sorular</h5>
+        <div class="input-group input-group-merge w-25">
+            <span class="input-group-text"><i class="bx bx-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Soru veya yazar ara...">
+        </div>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Soru Başlığı</th>
+                    <th>Yazar</th>
+                    <th>Kategori</th>
+                    <th>İstatistik</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody id="questionsTableBody">
+                <tr><td colspan="6" class="text-center py-4">Sorular yükleniyor...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var token = localStorage.getItem("token");
+        if (!token) { window.location.href = "/Auth/Login"; return; }
+
+        var tumSorular = [];
+
+        function sorulariGetir() {
+            $.ajax({
+                url: "https://localhost:7152/api/Questions",
+                type: "GET",
+                success: function (data) {
+                    tumSorular = data.sort((a, b) => b.id - a.id);
+                    tabloyaBas(tumSorular);
+                },
+                error: function () {
+                    $("#questionsTableBody").html('<tr><td colspan="6" class="text-center text-danger">Sorular yüklenemedi.</td></tr>');
+                }
+            });
+        }
+
+        function tabloyaBas(dataDizisi) {
+            var html = "";
+            if (dataDizisi.length === 0) {
+                html = '<tr><td colspan="6" class="text-center text-muted">Soru bulunamadı.</td></tr>';
+            } else {
+                $.each(dataDizisi, function (index, soru) {
+                    html += `
+                        <tr>
+                            <td><strong>#${soru.id}</strong></td>
+                            <td style="white-space: normal; min-width: 250px;">
+                                <a href="/Home/QuestionDetail/${soru.id}" target="_blank" class="text-dark fw-bold text-decoration-none">
+                                    ${soru.title}
+                                </a>
+                            </td>
+                            <td><i class="bx bx-user text-primary me-1"></i> ${soru.authorName}</td>
+                            <td><span class="badge bg-label-info">${soru.categoryName || soru.categoryId}</span></td>
+                            <td>
+                                <div class="d-flex flex-column small">
+                                    <span class="text-muted"><i class="bx bx-show me-1"></i>${soru.viewCount} Okunma</span>
+                                    <span class="text-muted"><i class="bx bx-message-rounded-dots me-1"></i>${soru.answerCount} Cevap</span>
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <a href="/Home/QuestionDetail/${soru.id}" target="_blank" class="btn btn-sm btn-icon btn-outline-primary" title="Görüntüle">
+                                    <i class="bx bx-link-external"></i>
+                                </a>
+                                <button class="btn btn-sm btn-icon btn-outline-danger ms-1" onclick="soruSil(${soru.id})" title="Sil">
+                                    <i class="bx bx-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            $("#questionsTableBody").html(html);
+        }
+
+        sorulariGetir();
+
+        $("#searchInput").on("keyup", function () {
+            var aranan = $(this).val().toLowerCase();
+            var filtrelenmis = tumSorular.filter(s =>
+                s.title.toLowerCase().includes(aranan) ||
+                s.authorName.toLowerCase().includes(aranan)
+            );
+            tabloyaBas(filtrelenmis);
+        });
+
+        window.soruSil = function (id) {
+            if (confirm("Bu soruyu tamamen silmek istediğinize emin misiniz?")) {
+                $.ajax({
+                    url: "https://localhost:7152/api/Questions/" + id,
+                    type: "DELETE",
+                    headers: { "Authorization": "Bearer " + token },
+                    success: function () {
+                        sorulariGetir(); 
+                    },
+                    error: function () {
+                        alert("Silme işlemi başarısız oldu. Yetkiniz olmayabilir.");
+                    }
+                });
+            }
+        };
+    });
+</script>
