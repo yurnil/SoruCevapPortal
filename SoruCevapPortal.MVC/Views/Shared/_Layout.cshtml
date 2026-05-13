@@ -2,48 +2,178 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SoruCevapPortal.MVC</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SoruCevapPortal.MVC.styles.css" asp-append-version="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Clean Blog - Start Bootstrap Theme</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SoruCevapPortal.MVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+    <nav class="navbar navbar-expand-lg bg-white border-bottom fixed-top shadow-sm" style="height: 70px; z-index: 1030;" id="forumNav">
+        <div class="container-fluid px-4 px-lg-5">
+
+            <a class="navbar-brand fw-bolder text-dark d-flex align-items-center" style="letter-spacing: -1px; text-transform: lowercase; font-size: 1.8rem;" href="/Home/Index">
+                <div class="bg-primary text-white rounded me-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                    <i class="fas fa-comment-dots fs-5"></i>
                 </div>
+                aklımatakıldı.
+            </a>
+
+            <form class="d-none d-lg-flex mx-auto position-relative" style="width: 45%;">
+                <i class="fas fa-search position-absolute text-muted" style="left: 15px; top: 50%; transform: translateY(-50%);"></i>
+                <input class="form-control bg-light border-0 w-100" type="search" placeholder="Sorular, konular veya kullanıcı ara..." style="padding-left: 45px; border-radius: 10px; height: 42px; font-size: 0.95rem;">
+                <div class="position-absolute text-muted bg-white border" style="right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.75rem; padding: 2px 6px; border-radius: 6px; font-weight: bold;">
+                    ⌘ K
+                </div>
+            </form>
+
+            <div class="d-flex align-items-center ms-auto">
+
+                <a href="/Home/AskQuestion" id="navAskButton" class="btn btn-primary fw-bold text-white me-4 align-items-center shadow-sm d-none" style="border-radius: 10px; padding: 8px 20px; font-size: 0.95rem;">
+                    <i class="fas fa-pen me-2" style="font-size: 0.8rem;"></i> Soru Sor
+                </a>
+
+                <div id="guestMenu" class="d-none">
+                    <a href="/Auth/Login" class="btn fw-bold text-secondary me-2" style="border-radius: 8px;">Giriş Yap</a>
+                    <a href="/Auth/Register" class="btn btn-primary fw-bold shadow-sm" style="border-radius: 8px;">Kayıt Ol</a>
+                </div>
+
+                <div id="userMenu" class="d-none align-items-center">
+
+                    <div class="dropdown me-4">
+                        <a href="#" class="text-secondary fs-5 position-relative text-decoration-none" id="dropdownNotification" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="far fa-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="width: 10px; height: 10px;"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end text-small shadow border-0 mt-2" aria-labelledby="dropdownNotification" style="border-radius: 10px; min-width: 250px;">
+                            <li><h6 class="dropdown-header fw-bold text-dark border-bottom pb-2">Bildirimler</h6></li>
+                            <li><a class="dropdown-item text-muted py-3 text-center" href="#">Henüz bildiriminiz yok</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown">
+                        <a href="#" class="d-block link-dark text-decoration-none" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://ui-avatars.com/api/?name=Kullanici&background=random" id="navUserAvatar" alt="Profil" width="40" height="40" class="rounded-circle border border-2 border-white shadow-sm" style="object-fit: cover;">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end text-small shadow border-0 mt-2" aria-labelledby="dropdownUser" style="border-radius: 10px;">
+                            <li><a class="dropdown-item fw-bold text-secondary" href="/Home/Profile">Profilim</a></li>
+                            <li><a class="dropdown-item fw-bold text-secondary" href="/Home/Profile">Ayarlar</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-bold text-danger" href="#" id="btnLogout" style="cursor:pointer;">Çıkış Yap</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+        </div>
+    </nav>
+    <div class="container-fluid px-0 mt-5 pt-3">
+
+        @RenderBody()
+
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - SoruCevapPortal.MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top mt-5">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <ul class="list-inline text-center">
+                        <li class="list-inline-item">
+                            <a href="#!">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#!">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#!">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2023</div>
+                </div>
+            </div>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/scripts.js"></script>
+
+    <script>
+        function parseJwt(token) {
+            if (!token) return null;
+            try {
+                var base64Url = token.split('.')[1];
+                var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        $(document).ready(function () {
+            var token = localStorage.getItem("token");
+
+            if (token) {
+                $("#userMenu").removeClass("d-none").addClass("d-flex");
+                $("#navAskButton").removeClass("d-none").addClass("d-flex");
+                $("#guestMenu").addClass("d-none");
+
+                var payload = parseJwt(token);
+                if (payload) {
+                    var userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || payload.sub || payload.Id || payload.id;
+                    var name = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || payload.unique_name || "Kullanıcı";
+
+                    $("#navUserAvatar").attr("src", "https://ui-avatars.com/api/?name=" + name + "&background=random");
+
+                    $.ajax({
+                        url: "https://localhost:7152/api/Users/getProfile/" + userId,
+                        type: "GET",
+                        headers: { "Authorization": "Bearer " + token },
+                        success: function (user) {
+                            if (user.profileImageUrl) {
+                                $("#navUserAvatar").attr("src", "https://localhost:7152" + user.profileImageUrl);
+                            } else {
+                                $("#navUserAvatar").attr("src", "https://ui-avatars.com/api/?name=" + user.firstName + "+" + user.lastName + "&background=random");
+                            }
+                        }
+                    });
+                }
+            } else {
+
+                $("#guestMenu").removeClass("d-none").addClass("d-flex");
+                $("#userMenu").addClass("d-none");
+            }
+
+            $("#btnLogout").click(function (e) {
+                e.preventDefault();
+                localStorage.removeItem("token");
+                alert("Başarıyla çıkış yapıldı!");
+                window.location.href = "/Home/Index";
+            });
+        });
+    </script>
 </body>
 </html>

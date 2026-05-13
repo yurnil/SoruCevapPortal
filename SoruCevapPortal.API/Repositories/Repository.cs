@@ -47,5 +47,6 @@ namespace SoruCevapPortal.API.Repositories
             _dbSet.Remove(entity);
             _context.SaveChanges();
         }
+        public IQueryable<T> Table => _context.Set<T>();
     }
 }

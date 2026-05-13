@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SoruCevapPortal.API.DTOs;
@@ -15,24 +16,22 @@ namespace SoruCevapPortal.API.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public AuthController(UserManager<AppUser> userManager, IConfiguration configuration)
+        public AuthController(UserManager<AppUser> userManager, IConfiguration configuration, IMapper mapper)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _mapper = mapper;
+
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
 
-            var user = new AppUser
-            {
-                UserName = model.Email, 
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName
-            };
+            var user = _mapper.Map<AppUser>(model);
+            user.UserName = model.Email;
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -59,7 +58,11 @@ namespace SoruCevapPortal.API.Controllers
                 return Unauthorized(new { message = "Geçersiz e-posta veya şifre!" });
             }
 
-            var token = GenerateJwtToken(user);
+            
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            
+            var token = GenerateJwtToken(user, userRoles);
 
             return Ok(new
             {
@@ -68,15 +71,22 @@ namespace SoruCevapPortal.API.Controllers
             });
         }
 
-        private string GenerateJwtToken(AppUser user)
+        private string GenerateJwtToken(AppUser user, IList<string> roles)
         {
-            var claims = new[]
+            
+            var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id), 
-                new Claim(JwtRegisteredClaimNames.Email, user.Email), 
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("FirstName", user.FirstName),
-                new Claim("LastName", user.LastName) 
+                new Claim("LastName", user.LastName)
             };
+
+            
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -85,7 +95,7 @@ namespace SoruCevapPortal.API.Controllers
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddDays(1), 
+                expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds
             );
 

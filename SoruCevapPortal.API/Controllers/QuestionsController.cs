@@ -60,6 +60,41 @@ namespace SoruCevapPortal.API.Controllers
                 return NotFound(new { message = "Böyle bir soru bulunamadı." });
 
             return Ok(question);
+        
+        }
+       
+        [HttpGet("category/{categoryId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetQuestionsByCategory(int categoryId)
+        {
+            var questions = await _questionRepository.Where(q => q.CategoryId == categoryId);
+            return Ok(questions);
+        }
+
+        
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateQuestion(int id, [FromBody] QuestionCreateDto model)
+        {
+            var question = await _questionRepository.GetByIdAsync(id);
+            if (question == null) return NotFound(new { message = "Soru bulunamadı." });
+
+            question.Title = model.Title;
+            question.Content = model.Content;
+            question.CategoryId = model.CategoryId;
+
+            _questionRepository.Update(question);
+            return Ok(new { message = "Soru başarıyla güncellendi." });
+        }
+
+        
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteQuestion(int id)
+        {
+            var question = await _questionRepository.GetByIdAsync(id);
+            if (question == null) return NotFound(new { message = "Soru bulunamadı." });
+
+            _questionRepository.Remove(question);
+            return Ok(new { message = "Soru başarıyla silindi." });
         }
     }
 }

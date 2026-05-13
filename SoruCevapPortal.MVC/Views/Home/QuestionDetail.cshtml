@@ -1,0 +1,372 @@
+﻿@{
+    ViewData["Title"] = "Soru Detayı - aklımatakıldı";
+}
+
+<style>
+    body {
+        background-color: #fcfcfd;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .detail-card {
+        border: 1px solid #eaecf0;
+        border-radius: 16px;
+        background: #fff;
+        padding: 40px;
+        box-shadow: 0 4px 12px rgba(16, 24, 40, 0.04);
+    }
+
+    .question-title {
+        font-weight: 800;
+        color: #101828;
+        font-size: 2.2rem;
+        letter-spacing: -0.5px;
+        line-height: 1.3;
+    }
+
+    .question-content {
+        font-size: 1.15rem;
+        color: #344054;
+        line-height: 1.8;
+    }
+
+    .tag-badge {
+        background-color: #f0f6ff;
+        color: #0056d2;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 6px 16px;
+        border-radius: 50px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .answer-input {
+        border-radius: 12px;
+        border: 1px solid #d0d5dd;
+        padding: 15px;
+        font-size: 1rem;
+        width: 100%;
+        transition: all 0.2s;
+        resize: vertical;
+    }
+
+        .answer-input:focus {
+            border-color: #0056d2;
+            box-shadow: 0 0 0 4px rgba(0, 86, 210, 0.1);
+            outline: none;
+        }
+
+    .submit-btn {
+        background-color: #0056d2;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 12px 28px;
+        color: white;
+        transition: 0.2s;
+        font-size: 1.05rem;
+    }
+
+        .submit-btn:hover {
+            background-color: #0044a8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 86, 210, 0.2);
+        }
+</style>
+
+<div class="container" style="margin-top: 110px; margin-bottom: 80px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+
+            <div class="detail-card mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span id="detayKategori" class="tag-badge"><i class="fas fa-tag me-1"></i> Yükleniyor...</span>
+
+                    <div class="text-muted fw-bold d-flex align-items-center" style="font-size: 0.9rem;">
+                        <i class="far fa-eye me-2"></i> 1.2K Görüntülenme
+                    </div>
+                </div>
+
+                <h1 id="detayBaslik" class="question-title mb-4">Soru yükleniyor...</h1>
+
+                <div class="d-flex align-items-center mb-4 pb-4 border-bottom">
+                    <img src="https://ui-avatars.com/api/?name=Kullanici&background=random" class="rounded-circle me-3" width="48" height="48">
+                    <div>
+                        <div class="fw-bold text-dark" style="font-size: 1.05rem;">Topluluk Üyesi</div>
+                        <div class="text-muted" style="font-size: 0.85rem;"><i class="far fa-clock me-1"></i> Yakın zamanda soruldu</div>
+                    </div>
+                </div>
+
+                <p id="detayIcerik" class="question-content mb-0">İçerik yükleniyor, lütfen bekleyin...</p>
+            </div>
+
+            <div class="d-flex align-items-center mb-4">
+                <h3 class="fw-bolder mb-0 me-3" style="color: #101828;">Cevaplar</h3>
+                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-bold">Tartışma Alanı</span>
+            </div>
+
+            <div id="cevapListesi" class="mb-5">
+                <div class="text-center my-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            </div>
+
+            <div id="cevapYazmaAlani" class="detail-card bg-light border-0 mt-2">
+                <h4 class="fw-bold mb-3" style="color: #101828;">Senin Cevabın Nedir?</h4>
+                <p class="text-muted mb-4">Deneyimlerini paylaş, soru soran kişiye ve topluluğa yardımcı ol.</p>
+
+                <form id="answerForm">
+                    <div class="mb-4">
+                        <textarea id="answerContent" class="form-control answer-input" rows="6" placeholder="Bilgini ve çözüm önerini buraya yaz..." required></textarea>
+                    </div>
+
+                    <div id="errorMessage" class="text-danger d-none mb-3 fw-bold bg-danger bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-exclamation-triangle me-1"></i> Cevap gönderilirken bir hata oluştu.
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" id="submitAnswerBtn" class="btn submit-btn">
+                            <i class="fas fa-paper-plane me-2"></i> Cevabı Gönder
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="misafirUyarisi" class="detail-card text-center d-none bg-primary bg-opacity-10 border-0 mt-4 py-5">
+                <div class="bg-white text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-4 shadow-sm" style="width: 70px; height: 70px;">
+                    <i class="fas fa-lock fs-2"></i>
+                </div>
+                <h3 class="fw-bolder text-dark mb-3">Cevap yazabilmek için giriş yapmalısın</h3>
+                <p class="text-muted mb-4" style="font-size: 1.1rem;">Sen de tartışmaya katılmak ve insanlara yardımcı olmak ister misin?</p>
+                <a href="/Auth/Login" class="btn submit-btn px-5 py-3 rounded-pill shadow-sm">Hemen Giriş Yap</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editAnswerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <div class="modal-header border-bottom-0 pb-0 mt-2">
+                <h5 class="fw-bold text-dark d-flex align-items-center">
+                    <div class="bg-secondary bg-opacity-10 text-secondary rounded d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                        <i class="fas fa-pen" style="font-size: 0.9rem;"></i>
+                    </div>
+                    Cevabı Düzenle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editAnswerId">
+                <textarea id="editAnswerContent" class="form-control answer-input" rows="5" placeholder="Cevabını buraya yaz..."></textarea>
+            </div>
+            <div class="modal-footer border-top-0 pt-0 mb-2">
+                <button type="button" class="btn btn-light fw-bold text-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Vazgeç</button>
+                <button type="button" class="btn submit-btn px-4" id="saveEditedAnswerBtn">Değişiklikleri Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getUserIdFromToken(token) {
+        if (!token) return null;
+        try {
+            var payload = JSON.parse(atob(token.split('.')[1]));
+            return payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || payload.sub || payload.Id || payload.id;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    $(document).ready(function () {
+        var tiklananSoruId = '@ViewBag.QuestionId';
+        var userToken = localStorage.getItem("token");
+        var currentUserId = getUserIdFromToken(userToken);
+
+        if (!userToken) {
+            $("#cevapYazmaAlani").addClass("d-none");
+            $("#misafirUyarisi").removeClass("d-none");
+        }
+
+        $.ajax({
+            url: "https://localhost:7152/api/Questions/" + tiklananSoruId,
+            type: "GET",
+            success: function (soruData) {
+                $("#detayBaslik").text(soruData.title);
+                $("#detayIcerik").text(soruData.content);
+                $("#detayKategori").text("Kategori ID: " + soruData.categoryId);
+            },
+            error: function () {
+                $("#detayBaslik").text("Soru Bulunamadı");
+                $("#detayIcerik").text("Soru API'den çekilirken bir hata oluştu.");
+            }
+        });
+
+        $.ajax({
+            url: "https://localhost:7152/api/Answers/question/" + tiklananSoruId,
+            type: "GET",
+            success: function (cevaplarData) {
+                if (cevaplarData && cevaplarData.length > 0) {
+                    var cevapHtml = "";
+                    $.each(cevaplarData, function (index, cevap) {
+
+                        var tarih = new Date(cevap.createdDate).toLocaleString('tr-TR', {
+                            year: 'numeric', month: 'long', day: 'numeric',
+                            hour: '2-digit', minute: '2-digit'
+                        });
+                        var adSoyad = "Anonim Kullanıcı";
+                        var basHarf = "A";
+
+                        if (cevap.appUser) {
+                            adSoyad = cevap.appUser.firstName + " " + cevap.appUser.lastName;
+                            basHarf = cevap.appUser.firstName.charAt(0).toUpperCase();
+                        }
+
+                        var isOwner = (userToken && currentUserId && cevap.appUserId == currentUserId);
+                        var menuIcerik = "";
+
+                        if (userToken && isOwner) {
+                            menuIcerik = `
+                                <li><a class="dropdown-item fw-bold text-secondary py-2" href="#" onclick="cevapDuzenleModalAc(${cevap.id}); return false;"><i class="fas fa-pen me-2"></i> Düzenle</a></li>
+                                <li><a class="dropdown-item fw-bold text-danger py-2" href="#" onclick="cevapSil(${cevap.id}); return false;"><i class="fas fa-trash-alt me-2"></i> Sil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            `;
+                        } else if (userToken && !isOwner) {
+                            menuIcerik = `
+                                <li><a class="dropdown-item fw-bold text-secondary py-2" href="#"><i class="fas fa-flag me-2"></i> Şikayet Et</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            `;
+                        }
+                        menuIcerik += `<li><a class="dropdown-item fw-bold text-secondary py-2" href="#"><i class="fas fa-link me-2"></i> Bağlantıyı Kopyala</a></li>`;
+
+                        cevapHtml += `
+                            <div class="card mb-4 border-0 shadow-sm position-relative" style="border-radius: 15px; background-color: #f8f9fa;">
+
+                                <div class="dropdown position-absolute" style="right: 15px; top: 15px; z-index: 10;">
+                                    <button class="btn btn-sm text-muted border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: transparent;">
+                                        <i class="fas fa-ellipsis-v fs-5 px-2"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 10px; font-size: 0.9rem;">
+                                        ${menuIcerik}
+                                    </ul>
+                                </div>
+
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; font-size: 1.2rem; font-weight: bold;">
+                                            ${basHarf}
+                                        </div>
+
+                                        <div class="ms-3">
+                                            <h6 class="mb-0 fw-bold text-dark" style="font-size: 1.1rem;">${adSoyad}</h6>
+                                            <small class="text-muted">${tarih}</small>
+                                        </div>
+                                    </div>
+
+                                    <p id="cevap-icerik-${cevap.id}" class="card-text text-dark mt-3" style="font-size: 1.1rem; line-height: 1.6;">${cevap.content}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    $("#cevapListesi").html(cevapHtml);
+                } else {
+                    $("#cevapListesi").html("<p class='text-muted'>Bu soruya henüz cevap yazılmamış. İlk cevaplayan sen ol!</p>");
+                }
+            },
+            error: function (hata) {
+                console.log("Cevaplar çekilemedi: ", hata);
+            }
+        });
+
+        $("#answerForm").submit(function (e) {
+            e.preventDefault();
+
+            $("#errorMessage").addClass("d-none");
+            $("#submitAnswerBtn").prop("disabled", true).text("Gönderiliyor...");
+
+            var answerData = {
+                content: $("#answerContent").val(),
+                questionId: parseInt(tiklananSoruId)
+            };
+
+            $.ajax({
+                url: "https://localhost:7152/api/Answers",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(answerData),
+                headers: { "Authorization": "Bearer " + userToken },
+                success: function (response) {
+                    alert("Cevabınız başarıyla eklendi!");
+                    location.reload();
+                },
+                error: function (hata) {
+                    console.log(hata);
+                    $("#errorMessage").removeClass("d-none");
+                    $("#submitAnswerBtn").prop("disabled", false).text("Cevabı Gönder");
+                }
+            });
+        });
+
+        $("#saveEditedAnswerBtn").click(function () {
+            var answerId = $("#editAnswerId").val();
+            var updatedContent = $("#editAnswerContent").val();
+
+            var updateData = {
+                id: parseInt(answerId),
+                content: updatedContent,
+                questionId: parseInt(tiklananSoruId),
+                appUserId: currentUserId
+            };
+
+            $.ajax({
+                url: "https://localhost:7152/api/Answers/" + answerId,
+                type: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify(updateData),
+                headers: { "Authorization": "Bearer " + userToken },
+                success: function () {
+                    alert("Cevabınız başarıyla güncellendi!");
+                    window.location.reload();
+                },
+                error: function (xhr) {
+                    console.log("Sunucu Hatası Detayı:", xhr);
+
+                    var hataSebebi = xhr.responseText ? xhr.responseText : ("HTTP Durum Kodu: " + xhr.status);
+                    alert("API bu güncellemeyi şu sebeple reddetti:\n\n" + hataSebebi);
+                }
+            });
+        });
+    });
+
+    function cevapDuzenleModalAc(cevapId) {
+        var eskiYazi = $("#cevap-icerik-" + cevapId).text().trim();
+        $("#editAnswerId").val(cevapId);
+        $("#editAnswerContent").val(eskiYazi);
+
+        var editModal = new bootstrap.Modal(document.getElementById('editAnswerModal'));
+        editModal.show();
+    }
+
+    function cevapSil(cevapId) {
+        var onay = confirm("Bu cevabı silmek istediğinize emin misiniz? İşlem geri alınamaz.");
+        if (onay) {
+            var token = localStorage.getItem("token");
+            $.ajax({
+                url: "https://localhost:7152/api/Answers/" + cevapId,
+                type: "DELETE",
+                headers: { "Authorization": "Bearer " + token },
+                success: function () {
+                    alert("Cevap başarıyla silindi!");
+                    window.location.reload();
+                },
+                error: function (hata) {
+                    console.log(hata);
+                    alert("Cevap silinirken bir hata oluştu.");
+                }
+            });
+        }
+    }
+</script>

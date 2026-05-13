@@ -1,0 +1,366 @@
+﻿@{
+    ViewData["Title"] = "Profilim - aklımatakıldı";
+}
+
+<style>
+    body {
+        background-color: #fcfcfd;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .profile-card {
+        border: 1px solid #eaecf0;
+        border-radius: 16px;
+        background: #fff;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(16, 24, 40, 0.04);
+    }
+
+    .stat-box {
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #eaecf0;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #101828;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: #667085;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .nav-tabs {
+        border-bottom: 1px solid #eaecf0;
+    }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #667085;
+            font-weight: 600;
+            padding: 15px 20px;
+            margin-right: 10px;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+            .nav-tabs .nav-link:hover {
+                color: #101828;
+            }
+
+            .nav-tabs .nav-link.active {
+                color: #0056d2;
+                border-bottom: 2px solid #0056d2;
+                background: transparent;
+            }
+
+    .logout-btn {
+        border: 1px solid #fda29b;
+        color: #d92d20;
+        background-color: #fff;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 10px 20px;
+        transition: 0.2s;
+        width: 100%;
+    }
+
+        .logout-btn:hover {
+            background-color: #fef3f2;
+            color: #d92d20;
+        }
+</style>
+
+<div class="container" style="margin-top: 110px; margin-bottom: 80px;">
+    <div class="row">
+
+        <div class="col-lg-4 mb-4">
+            <div class="profile-card text-center position-relative">
+                <div class="position-absolute" style="top: 20px; right: 20px;">
+                    <a href="#" class="text-muted"><i class="fas fa-cog fs-5"></i></a>
+                </div>
+
+                <div id="profileImageContainer" class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 100px; height: 100px; overflow: hidden;">
+                    <span id="profileInitial" style="font-size: 2.5rem; font-weight: bold;">?</span>
+                    <img id="profilePicture" src="" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+
+                <h3 id="profileName" class="fw-bold text-dark mb-1">Kullanıcı Adı</h3>
+                <p id="profileEmail" class="text-muted mb-4">kullanici@email.com</p>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <div id="statQuestions" class="stat-number">0</div>
+                            <div class="stat-label">Soru</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <div id="statAnswers" class="stat-number">0</div>
+                            <div class="stat-label">Cevap</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="logout-btn" onclick="cikisYap()">
+                    <i class="fas fa-sign-out-alt me-2"></i> Çıkış Yap
+                </button>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="profile-card" style="min-height: 500px;">
+
+                <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="sorularim-tab" data-bs-toggle="tab" data-bs-target="#sorularim" type="button" role="tab">
+                            <i class="fas fa-question-circle me-2"></i>Sorduğum Sorular
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="cevaplarim-tab" data-bs-toggle="tab" data-bs-target="#cevaplarim" type="button" role="tab">
+                            <i class="fas fa-comment-dots me-2"></i>Verdiğim Cevaplar
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="profileTabsContent">
+
+                    <div class="tab-pane fade show active" id="sorularim" role="tabpanel">
+                        <div id="sorularimListesi">
+                            <div class="text-center my-5 text-muted">
+                                <div class="spinner-border spinner-border-sm me-2" role="status"></div> Sorularınız yükleniyor...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="cevaplarim" role="tabpanel">
+                        <div id="cevaplarimListesi">
+                            <div class="text-center my-5 text-muted">
+                                <div class="spinner-border spinner-border-sm me-2" role="status"></div> Cevaplarınız yükleniyor...
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <div class="modal-header border-bottom-0 pb-0 mt-2">
+                <h5 class="fw-bold text-dark d-flex align-items-center">
+                    <div class="bg-secondary bg-opacity-10 text-secondary rounded d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                        <i class="fas fa-user-edit" style="font-size: 0.9rem;"></i>
+                    </div>
+                    Profili Düzenle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Ad</label>
+                        <input type="text" class="form-control" id="editFirstName" style="border-radius: 8px;" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Soyad</label>
+                        <input type="text" class="form-control" id="editLastName" style="border-radius: 8px;" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Profil Fotoğrafı Yükle</label>
+                        <input type="file" class="form-control" id="editProfileImage" accept="image/*" style="border-radius: 8px;">
+                        <div class="form-text small text-muted">JPG, PNG veya GIF formatında bir dosya seçin. Boş bırakırsanız mevcut fotoğrafınız değişmez.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-top-0 pt-0 mb-2">
+                <button type="button" class="btn btn-light fw-bold text-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Vazgeç</button>
+                <button type="button" class="btn btn-primary fw-bold px-4" id="saveProfileBtn" style="border-radius: 8px;">Değişiklikleri Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function parseJwt(token) {
+        if (!token) return null;
+        try {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    $(document).ready(function () {
+        var token = localStorage.getItem("token");
+        if (!token) {
+            window.location.href = "/Auth/Login";
+            return;
+        }
+
+        var payload = parseJwt(token);
+        if (payload) {
+            var userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || payload.sub || payload.Id || payload.id;
+
+            $.ajax({
+                url: "https://localhost:7152/api/Users/getProfile/" + userId,
+                type: "GET",
+                headers: { "Authorization": "Bearer " + token },
+                success: function (user) {
+                    var fullName = user.firstName + " " + user.lastName;
+                    $("#profileName").text(fullName);
+                    $("#profileEmail").text(user.email);
+
+                    if (user.profileImageUrl) {
+                        $("#profilePicture").attr("src", "https://localhost:7152" + user.profileImageUrl).removeClass("d-none");
+                        $("#profileInitial").addClass("d-none");
+                    } else {
+                        $("#profileInitial").text(user.firstName.charAt(0).toUpperCase()).removeClass("d-none");
+                        $("#profilePicture").addClass("d-none");
+                    }
+                }
+            });
+
+            $.ajax({
+                url: "https://localhost:7152/api/Questions",
+                type: "GET",
+                success: function (data) {
+                    var benimSorularim = data.filter(q => q.appUserId == userId || q.userId == userId);
+                    $("#statQuestions").text(benimSorularim.length);
+
+                    if (benimSorularim.length > 0) {
+                        var htmlIcerik = "";
+                        $.each(benimSorularim, function (index, soru) {
+                            htmlIcerik += `
+                                <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="fw-bold mb-1" style="font-size: 1.05rem;">
+                                            <a href="/Home/QuestionDetail/${soru.id}" class="text-dark text-decoration-none">${soru.title}</a>
+                                        </h5>
+                                        <p class="text-muted small mb-0">${soru.content.length > 80 ? soru.content.substring(0, 80) + "..." : soru.content}</p>
+                                    </div>
+                                    <a href="/Home/QuestionDetail/${soru.id}" class="btn btn-sm btn-light border fw-bold text-primary">Git &rarr;</a>
+                                </div>
+                            `;
+                        });
+                        $("#sorularimListesi").html(htmlIcerik);
+                    } else {
+                        $("#sorularimListesi").html("<div class='text-center my-5 fw-bold text-muted'><i class='fas fa-ghost fs-1 mb-3 opacity-50'></i><br>Henüz hiç soru sormamışsın.</div>");
+                    }
+                },
+                error: function () {
+                    $("#sorularimListesi").html("<div class='text-center my-5 text-danger fw-bold'>Sorular yüklenirken hata oluştu.</div>");
+                }
+            });
+
+            $.ajax({
+                url: "https://localhost:7152/api/Answers/user/" + userId,
+                type: "GET",
+                success: function (cevaplarData) {
+                    $("#statAnswers").text(cevaplarData.length);
+
+                    if (cevaplarData.length > 0) {
+                        var htmlIcerik = "";
+                        $.each(cevaplarData, function (index, cevap) {
+                            htmlIcerik += `
+                                <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light rounded mb-2">
+                                    <div>
+                                        <p class="text-dark mb-1 fw-bold" style="font-size: 1rem;"><i class="fas fa-reply text-secondary me-2"></i>${cevap.content}</p>
+                                    </div>
+                                    <a href="/Home/QuestionDetail/${cevap.questionId}" class="btn btn-sm btn-white border fw-bold text-secondary shadow-sm">Soruya Bak</a>
+                                </div>
+                            `;
+                        });
+                        $("#cevaplarimListesi").html(htmlIcerik);
+                    } else {
+                        $("#cevaplarimListesi").html("<div class='text-center my-5 fw-bold text-muted'><i class='far fa-comment-dots fs-1 mb-3 opacity-50'></i><br>Henüz hiçbir soruya cevap vermemişsin.</div>");
+                    }
+                },
+                error: function () {
+                    $("#cevaplarimListesi").html("<div class='text-center my-5 text-warning fw-bold'><i class='fas fa-tools fs-2 mb-2'></i><br>Cevapları getirecek API metodu henüz hazır değil.</div>");
+                }
+            });
+        }
+    });
+
+    function cikisYap() {
+        var onay = confirm("Çıkış yapmak istediğinize emin misiniz?");
+        if (onay) {
+            localStorage.removeItem("token");
+            window.location.href = "/Home/Index";
+        }
+    }
+
+    $(".fa-cog").parent().click(function(e) {
+        e.preventDefault();
+
+        var currentFullName = $("#profileName").text().split(' ');
+        var firstName = currentFullName[0] || "";
+        var lastName = currentFullName.slice(1).join(' ') || "";
+
+        $("#editFirstName").val(firstName);
+        $("#editLastName").val(lastName);
+
+        var profileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+        profileModal.show();
+    });
+
+
+    $("#saveProfileBtn").click(function () {
+        var token = localStorage.getItem("token");
+        var payload = parseJwt(token);
+        var userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || payload.sub || payload.Id || payload.id;
+
+
+        var formData = new FormData();
+        formData.append("id", userId);
+        formData.append("firstName", $("#editFirstName").val());
+        formData.append("lastName", $("#editLastName").val());
+
+        var imageFile = $("#editProfileImage")[0].files[0];
+        if (imageFile) {
+            formData.append("profileImage", imageFile);
+        }
+
+        var btn = $(this);
+        btn.prop("disabled", true).text("Kaydediliyor...");
+
+        $.ajax({
+            url: "https://localhost:7152/api/Users/updateProfile",
+            type: "PUT",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: { "Authorization": "Bearer " + token },
+            success: function () {
+                alert("Profilin başarıyla güncellendi. Yeniden giriş yapman gerekebilir.");
+                window.location.reload();
+            },
+            error: function (xhr) {
+                console.log("Profil güncellenemedi:", xhr);
+                var hataSebebi = xhr.responseText ? xhr.responseText : "Bilinmeyen API Hatası";
+                alert("Güncelleme başarısız oldu:\n\n" + hataSebebi);
+                btn.prop("disabled", false).text("Değişiklikleri Kaydet");
+            }
+        });
+    });
+</script>

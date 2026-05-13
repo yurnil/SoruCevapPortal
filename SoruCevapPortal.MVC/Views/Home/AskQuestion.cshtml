@@ -1,0 +1,168 @@
+﻿@{
+    ViewData["Title"] = "Soru Sor - aklımatakıldı";
+}
+
+<style>
+    body {
+        background-color: #fcfcfd;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .ask-card {
+        border: 1px solid #eaecf0;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 10px 25px rgba(16, 24, 40, 0.05);
+    }
+
+    .ask-title {
+        font-weight: 800;
+        color: #101828;
+        letter-spacing: -0.5px;
+        font-size: 1.8rem;
+    }
+
+    .custom-input {
+        border-radius: 8px;
+        border: 1px solid #d0d5dd;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+        padding: 12px 15px;
+        font-size: 1rem;
+        color: #101828;
+    }
+
+        .custom-input:focus {
+            border-color: #0056d2;
+            box-shadow: 0 0 0 4px rgba(0, 86, 210, 0.1);
+            outline: none;
+        }
+
+    .submit-btn {
+        background-color: #0056d2;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 12px 24px;
+        color: white;
+        transition: 0.2s;
+        font-size: 1.05rem;
+    }
+
+        .submit-btn:hover {
+            background-color: #0044a8;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 86, 210, 0.2);
+        }
+</style>
+
+<div class="container d-flex justify-content-center" style="min-height: 85vh; padding-top: 100px; padding-bottom: 50px;">
+    <div class="col-12 col-lg-8">
+        <div class="ask-card p-4 p-md-5">
+
+            <div class="d-flex align-items-center border-bottom pb-4 mb-4">
+                <div class="bg-primary bg-opacity-10 text-primary rounded d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                    <i class="fas fa-pen fs-5"></i>
+                </div>
+                <div>
+                    <h2 class="ask-title mb-1">Aklına takılanı sor</h2>
+                    <p class="text-muted mb-0" style="font-size: 0.95rem;">Topluluğun gücünden faydalan, aradığın cevabı bul.</p>
+                </div>
+            </div>
+
+            <form id="askQuestionForm">
+
+                <div class="mb-4">
+                    <label for="title" class="form-label fw-bold" style="color: #344054; font-size: 0.95rem;">Soru Başlığı <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control custom-input" id="title" placeholder="Örn: ASP.NET Core MVC'de CORS hatası nasıl çözülür?" required>
+                    <div class="form-text mt-2 text-muted" style="font-size: 0.8rem;">Sorunuzu özetleyen, net ve kısa bir başlık yazın.</div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold mt-3">Kategori <span class="text-danger">*</span></label>
+                    <select class="form-select" id="categoryId" style="border-radius: 8px;" required>
+                        <option value="" disabled selected>Kategoriler yükleniyor...</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="content" class="form-label fw-bold" style="color: #344054; font-size: 0.95rem;">Soru Detayları <span class="text-danger">*</span></label>
+                    <textarea class="form-control custom-input" id="content" rows="7" placeholder="Karşılaştığın sorunu, denediğin yolları veya merak ettiğin konunun detaylarını buraya yaz..." required></textarea>
+                </div>
+
+                <div id="errorMessage" class="text-danger d-none mb-4 fw-bold bg-danger bg-opacity-10 p-3 rounded">
+                    <i class="fas fa-exclamation-circle me-1"></i> Sorunuz gönderilirken bir hata oluştu.
+                </div>
+
+                <div class="d-flex justify-content-end pt-2 border-top mt-4">
+                    <a href="/Home/Index" class="btn btn-light fw-bold me-3 border text-secondary" style="border-radius: 8px; padding: 12px 24px;">Vazgeç</a>
+                    <button class="btn submit-btn" id="submitButton" type="submit">
+                        <i class="fas fa-paper-plane me-2"></i> Soruyu Yayınla
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var token = localStorage.getItem("token");
+        if (!token) {
+            alert("Soru sorabilmek için önce giriş yapmalısınız!");
+            window.location.href = "/Auth/Login";
+            return; 
+        }
+            // Sayfa açıldığında kategorileri API'den çekip Select kutusuna doldurur
+    $.ajax({
+        url: "https://localhost:7152/api/Categories",
+        type: "GET",
+        success: function (kategoriler) {
+            var selectHtml = '<option value="" disabled selected>Bir kategori seçin...</option>';
+
+            $.each(kategoriler, function (index, kategori) {
+                selectHtml += '<option value="' + kategori.id + '">' + kategori.name + '</option>';
+            });
+
+            $("#categoryId").html(selectHtml);
+        },
+        error: function () {
+            $("#categoryId").html('<option value="" disabled selected>Kategoriler yüklenemedi!</option>');
+        }
+    });
+
+        $("#askQuestionForm").submit(function (e) {
+            e.preventDefault();
+
+            $("#errorMessage").addClass("d-none");
+            $("#submitButton").prop("disabled", true).text("Gönderiliyor...");
+
+            var questionData = {
+                title: $("#title").val(),
+                content: $("#content").val(),
+                categoryId: parseInt($("#categoryId").val()) 
+            };
+
+            $.ajax({
+                url: "https://localhost:7152/api/Questions",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(questionData),
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                success: function (response) {
+                    alert("Sorunuz başarıyla yayınlandı!");
+                    window.location.href = "/Home/Index"; 
+                },
+                error: function (hata) {
+                    console.log(hata);
+                    $("#errorMessage").removeClass("d-none");
+                    $("#submitButton").prop("disabled", false).text("Gönder");
+                }
+            });
+        });
+    });
+</script>

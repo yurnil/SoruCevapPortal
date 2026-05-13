@@ -1,0 +1,176 @@
+﻿@{
+    ViewData["Title"] = "Kayıt Ol - aklımatakıldı";
+}
+
+<style>
+    body {
+        background-color: #fcfcfd;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .auth-card {
+        border: 1px solid #eaecf0;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 10px 25px rgba(16, 24, 40, 0.05);
+    }
+
+    .auth-title {
+        font-weight: 800;
+        color: #101828;
+        letter-spacing: -0.5px;
+        font-size: 1.8rem;
+    }
+
+    .auth-input {
+        border-radius: 8px;
+        border: 1px solid #d0d5dd;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+        padding: 12px 15px;
+        font-size: 1rem;
+        color: #101828;
+    }
+
+        .auth-input:focus {
+            border-color: #0056d2;
+            box-shadow: 0 0 0 4px rgba(0, 86, 210, 0.1);
+            outline: none;
+        }
+
+    .auth-btn {
+        background-color: #0056d2;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 12px;
+        color: white;
+        transition: 0.2s;
+        font-size: 1.05rem;
+    }
+
+        .auth-btn:hover {
+            background-color: #0044a8;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 86, 210, 0.2);
+        }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 85vh; padding-top: 60px;">
+    <div class="col-12 col-md-8 col-lg-5">
+        <div class="auth-card p-4 p-md-5 my-5">
+
+            <div class="text-center mb-4">
+                <h2 class="auth-title">Aramıza Katıl</h2>
+                <p class="text-muted" style="font-size: 0.95rem;">Aklına takılanları sormak için hemen hesabını oluştur.</p>
+            </div>
+
+            <form id="registerForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName" class="form-label fw-bold" style="color: #344054; font-size: 0.9rem;">Ad</label>
+                        <input type="text" class="form-control auth-input" id="firstName" placeholder="Adınız" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName" class="form-label fw-bold" style="color: #344054; font-size: 0.9rem;">Soyad</label>
+                        <input type="text" class="form-control auth-input" id="lastName" placeholder="Soyadınız" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-bold" style="color: #344054; font-size: 0.9rem;">E-posta Adresi</label>
+                    <input type="email" class="form-control auth-input" id="email" placeholder="ornek@mail.com" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-bold" style="color: #344054; font-size: 0.9rem;">Şifre</label>
+                    <input type="password" class="form-control auth-input" id="password" placeholder="En az 6 karakter" required>
+                </div>
+
+                <div id="errorMessage" class="text-danger d-none mb-3 text-center fw-bold bg-danger bg-opacity-10 p-2 rounded">
+                    <i class="fas fa-exclamation-circle me-1"></i> Kayıt işlemi başarısız. Bilgileri kontrol edin.
+                </div>
+
+                <div class="d-grid mb-4">
+                    <button class="btn auth-btn" id="submitButton" type="submit">Hesap Oluştur</button>
+                </div>
+            </form>
+
+            <div class="text-center">
+                <span style="color: #667085; font-size: 0.95rem;">Zaten hesabınız var mı?</span>
+                <a href="/Auth/Login" class="text-decoration-none ms-1" style="color: #0056d2; font-weight: 700;">Giriş Yapın</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#registerForm").submit(function (e) {
+            e.preventDefault();
+
+            $("#errorMessage").addClass("d-none");
+
+            var registerData = {
+                firstName: $("#firstName").val(),
+                lastName: $("#lastName").val(),
+                email: $("#email").val(),
+                password: $("#password").val()
+            };
+
+            $.ajax({
+                url: "https://localhost:7152/api/Auth/register",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(registerData),
+                success: function (response) {
+                    alert("Harika! Başarıyla kayıt oldunuz. Şimdi giriş yapabilirsiniz.");
+                    window.location.href = "/Auth/Login";
+                },
+                error: function (hata) {
+                    console.log(hata);
+                    $("#errorMessage").removeClass("d-none");
+                }
+            });
+        });
+    });
+</script>
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#registerForm").submit(function (e) {
+            e.preventDefault();
+
+            $("#errorMessage").addClass("d-none");
+
+            $("#submitButton").prop("disabled", true).text("Kaydediliyor...");
+
+            var registerData = {
+                firstName: $("#firstName").val(),
+                lastName: $("#lastName").val(),
+                email: $("#email").val(),
+                password: $("#password").val()
+            };
+
+            $.ajax({
+                url: "https://localhost:7152/api/Auth/register",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(registerData),
+                success: function (response) {
+                    alert("Harika! Başarıyla kayıt oldunuz. Şimdi giriş yapabilirsiniz.");
+                    window.location.href = "/Auth/Login";
+                },
+                error: function (hata) {
+                    console.log(hata);
+                    $("#errorMessage").removeClass("d-none");
+
+                    $("#submitButton").prop("disabled", false).text("Kayıt Ol");
+                }
+            });
+        });
+    });
+</script>
+</script>

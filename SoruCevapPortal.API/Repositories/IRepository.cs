@@ -2,7 +2,7 @@
 
 namespace SoruCevapPortal.API.Repositories
 {
-    // T : class diyerek bunun sadece sınıflar (bizim modellerimiz) için çalışacağını belirtiyoruz.
+    
     public interface IRepository<T> where T : class
     {
         Task<IEnumerable<T>> GetAllAsync();
@@ -11,5 +11,6 @@ namespace SoruCevapPortal.API.Repositories
         Task AddAsync(T entity);
         void Update(T entity);
         void Remove(T entity);
+        IQueryable<T> Table { get; }
     }
 }

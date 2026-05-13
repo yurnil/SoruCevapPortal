@@ -18,8 +18,20 @@ namespace SoruCevapPortal.MVC.Controllers
             return View();
         }
 
+        public IActionResult AskQuestion()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
+            return View();
+        }
+
+        public IActionResult QuestionDetail(int id)
+        {
+
+            ViewBag.QuestionId = id;
             return View();
         }
 
@@ -27,6 +39,17 @@ namespace SoruCevapPortal.MVC.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult EditQuestion(int id)
+        {
+            ViewBag.QuestionId = id;
+            return View();
+        }
+
+        public IActionResult Profile()
+        {
+            return View();
         }
     }
 }

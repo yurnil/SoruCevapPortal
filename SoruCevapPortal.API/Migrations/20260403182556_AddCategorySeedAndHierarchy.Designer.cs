@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SoruCevapPortal.API.Models;
 
@@ -11,9 +12,11 @@ using SoruCevapPortal.API.Models;
 namespace SoruCevapPortal.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260403182556_AddCategorySeedAndHierarchy")]
+    partial class AddCategorySeedAndHierarchy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -242,9 +245,6 @@ namespace SoruCevapPortal.API.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ProfileImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -304,95 +304,34 @@ namespace SoruCevapPortal.API.Migrations
                         {
                             Id = 1,
                             CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Yazılım dilleri, donanım, yapay zeka ve güncel teknolojiler.",
+                            Description = "Programlama dilleri ve mimariler.",
                             IsActive = true,
-                            Name = "Teknoloji & Yazılım"
+                            Name = "Yazılım"
                         },
                         new
                         {
                             Id = 2,
                             CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Üniversite, akademik kadro ve sınav hazırlıkları.",
+                            Description = "Bilgisayar parçaları ve donanım sorunları.",
                             IsActive = true,
-                            Name = "Eğitim & Sınavlar"
+                            Name = "Donanım"
                         },
                         new
                         {
                             Id = 3,
                             CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "İş bulma, mülakatlar, CV hazırlama ve ofis yaşamı.",
-                            IsActive = true,
-                            Name = "Kariyer & İş Hayatı"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Sinema, müzik, edebiyat, oyunlar ve hobiler.",
-                            IsActive = true,
-                            Name = "Kültür & Sanat"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Hayata dair tavsiyeler, yemek mekanları, seyahat ve sohbet.",
-                            IsActive = true,
-                            Name = "Gündelik Yaşam"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "ASP.NET Core, React, HTML/CSS projeleri.",
+                            Description = "ASP.NET, React, HTML gibi teknolojiler.",
                             IsActive = true,
                             Name = "Web Geliştirme",
                             ParentCategoryId = 1
                         },
                         new
                         {
-                            Id = 7,
+                            Id = 4,
                             CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "C#, Delphi, Flutter, React Native.",
+                            Description = "Yazılım dışı, hayata dair sorular.",
                             IsActive = true,
-                            Name = "Masaüstü & Mobil",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "SQL Server, MySQL, PostgreSQL.",
-                            IsActive = true,
-                            Name = "Veritabanı Yönetimi",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "DGS hazırlık süreci, kontenjanlar ve mühendislik geçişleri.",
-                            IsActive = true,
-                            Name = "DGS (Dikey Geçiş Sınavı)",
-                            ParentCategoryId = 2
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Yurtdışı staj, dil sınavları ve Avrupa'da eğitim.",
-                            IsActive = true,
-                            Name = "Erasmus & Yurtdışı",
-                            ParentCategoryId = 2
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CreatedDate = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Üniversite dersleri, proje ödevleri ve sunumlar.",
-                            IsActive = true,
-                            Name = "Vize & Final Haftası",
-                            ParentCategoryId = 2
+                            Name = "Gündelik"
                         });
                 });
 
@@ -552,7 +491,8 @@ namespace SoruCevapPortal.API.Migrations
                 {
                     b.HasOne("SoruCevapPortal.API.Models.Category", "ParentCategory")
                         .WithMany("SubCategories")
-                        .HasForeignKey("ParentCategoryId");
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ParentCategory");
                 });

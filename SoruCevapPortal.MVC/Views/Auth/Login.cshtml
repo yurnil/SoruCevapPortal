@@ -1,0 +1,132 @@
+﻿@{
+    ViewData["Title"] = "Giriş Yap - aklımatakıldı";
+}
+
+<style>
+    body {
+        background-color: #fcfcfd;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .auth-card {
+        border: 1px solid #eaecf0;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 10px 25px rgba(16, 24, 40, 0.05);
+    }
+
+    .auth-title {
+        font-weight: 800;
+        color: #101828;
+        letter-spacing: -0.5px;
+        font-size: 1.8rem;
+    }
+
+    .auth-input {
+        border-radius: 8px;
+        border: 1px solid #d0d5dd;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+        padding: 12px 15px;
+        font-size: 1rem;
+        color: #101828;
+    }
+
+        .auth-input:focus {
+            border-color: #0056d2;
+            box-shadow: 0 0 0 4px rgba(0, 86, 210, 0.1);
+            outline: none;
+        }
+
+    .auth-btn {
+        background-color: #0056d2;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 12px;
+        color: white;
+        transition: 0.2s;
+        font-size: 1.05rem;
+    }
+
+        .auth-btn:hover {
+            background-color: #0044a8;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 86, 210, 0.2);
+        }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 85vh; padding-top: 60px;">
+    <div class="col-12 col-md-8 col-lg-5">
+        <div class="auth-card p-4 p-md-5 my-5">
+
+            <div class="text-center mb-4">
+                <div class="text-white rounded d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 50px; height: 50px; background-color: #0056d2;">
+                    <i class="fas fa-comment-dots fs-3"></i>
+                </div>
+                <h2 class="auth-title">Tekrar Hoş Geldin</h2>
+                <p class="text-muted" style="font-size: 0.95rem;">Soru sormak ve cevaplamak için giriş yap.</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label for="email" class="form-label fw-bold" style="color: #344054; font-size: 0.9rem;">E-posta Adresi</label>
+                    <input type="email" class="form-control auth-input" id="email" placeholder="ornek@mail.com" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-bold d-flex justify-content-between" style="color: #344054; font-size: 0.9rem;">
+                        Şifre
+                        <a href="#" class="text-decoration-none" style="color: #0056d2; font-weight: 600;">Şifremi Unuttum</a>
+                    </label>
+                    <input type="password" class="form-control auth-input" id="password" placeholder="••••••••" required>
+                </div>
+
+                <div id="errorMessage" class="text-danger d-none mb-3 text-center fw-bold bg-danger bg-opacity-10 p-2 rounded">
+                    <i class="fas fa-exclamation-circle me-1"></i> Hata oluştu.
+                </div>
+
+                <div class="d-grid mb-4">
+                    <button class="btn auth-btn" id="submitButton" type="submit">Giriş Yap</button>
+                </div>
+            </form>
+
+            <div class="text-center">
+                <span style="color: #667085; font-size: 0.95rem;">Hesabınız yok mu?</span>
+                <a href="/Auth/Register" class="text-decoration-none ms-1" style="color: #0056d2; font-weight: 700;">Hemen Kayıt Olun</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#loginForm").submit(function (e) {
+            e.preventDefault();
+
+            var loginData = {
+                email: $("#email").val(),
+                password: $("#password").val()
+            };
+
+            $.ajax({
+                url: "https://localhost:7152/api/Auth/login", 
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(loginData),
+                success: function (response) {
+
+                    localStorage.setItem("token", response.token || response);
+
+                    alert("Başarıyla giriş yaptınız, anasayfaya yönlendiriliyorsunuz!");
+                    window.location.href = "/Home/Index"; 
+                },
+                error: function (hata) {
+                    console.log(hata);
+                    $("#errorMessage").removeClass("d-none"); 
+                }
+            });
+        });
+    });
+</script>

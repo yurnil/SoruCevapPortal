@@ -6,6 +6,7 @@ namespace SoruCevapPortal.API.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string? ProfileImageUrl { get; set; }
 
         public ICollection<Question> Questions { get; set; }
         public ICollection<Answer> Answers { get; set; }

@@ -1,8 +1,621 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Ana Sayfa - aklımatakıldı";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    body {
+        background-color: #fcfcfd;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .sidebar-link {
+        color: #475467;
+        font-weight: 600;
+        padding: 10px 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s;
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: #f0f6ff;
+            color: #0056d2;
+        }
+
+    .sidebar-icon {
+        width: 24px;
+        text-align: center;
+        margin-right: 12px;
+        font-size: 1.1rem;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        line-height: 1.2;
+        color: #101828;
+    }
+
+    .hero-title-blue {
+        color: #0056d2;
+    }
+
+    .main-search-box {
+        background: #fff;
+        border: 1px solid #d0d5dd;
+        border-radius: 12px;
+        padding: 8px;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    }
+
+    .main-search-input {
+        border: none;
+        box-shadow: none;
+        font-size: 1rem;
+        color: #667085;
+    }
+
+        .main-search-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+    .main-search-btn {
+        border-radius: 8px;
+        padding: 10px 16px;
+        background-color: #0056d2;
+        color: white;
+        border: none;
+        font-weight: 600;
+    }
+
+    .topic-pill {
+        border: 1px solid #eaecf0;
+        background: #fff;
+        color: #344054;
+        border-radius: 20px;
+        padding: 6px 16px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+        .topic-pill:hover {
+            background: #f9fafb;
+            border-color: #d0d5dd;
+            color: #101828;
+        }
+
+    .nav-tabs {
+        border-bottom: 1px solid #eaecf0;
+    }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #667085;
+            font-weight: 600;
+            padding: 12px 16px;
+            margin-right: 16px;
+            font-size: 0.95rem;
+        }
+
+            .nav-tabs .nav-link.active {
+                color: #0056d2;
+                border-bottom: 2px solid #0056d2;
+                background: transparent;
+            }
+
+    .question-card {
+        border: 1px solid #eaecf0;
+        border-radius: 12px;
+        background: #fff;
+        transition: box-shadow 0.2s;
+        padding: 20px;
+    }
+
+        .question-card:hover {
+            box-shadow: 0 4px 12px rgba(16, 24, 40, 0.05);
+        }
+
+    .vote-box {
+        min-width: 50px;
+        text-align: center;
+    }
+
+    .vote-arrow {
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: #98a2b3;
+    }
+
+        .vote-arrow:hover {
+            color: #0056d2;
+        }
+
+    .vote-count {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #101828;
+        margin: 8px 0;
+    }
+
+    .tag-badge {
+        background-color: #f0f6ff;
+        color: #0056d2;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+    }
+
+    .expert-badge {
+        background-color: #f4ebff;
+        color: #6941c6;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+
+    .right-card {
+        border: 1px solid #eaecf0;
+        border-radius: 12px;
+        background: #fff;
+        padding: 20px;
+    }
+
+    .dark-promo-card {
+        background: linear-gradient(145deg, #0f172a, #1e293b);
+        color: white;
+        border-radius: 12px;
+        padding: 24px;
+        position: relative;
+    }
+
+    .footer-feature {
+        display: flex;
+        align-items: center;
+        padding: 20px 0;
+    }
+
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        background: #f0f6ff;
+        color: #0056d2;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-right: 16px;
+    }
+</style>
+
+<div class="container-fluid px-4 px-xl-5 mt-5 pt-4 mb-5">
+    <div class="row">
+
+        <div class="col-lg-2 d-none d-lg-block pe-4">
+            <div class="sticky-top" style="top: 100px;">
+                <nav class="nav flex-column mb-4">
+                    <a class="sidebar-link active mb-1" href="/Home/Index"><i class="fas fa-home sidebar-icon text-primary"></i>Ana Sayfa</a>
+                    <a class="sidebar-link mb-1" href="#" onclick="alert('Keşfet özelliği yakında aktif olacak! 🚀'); return false;"><i class="fas fa-compass sidebar-icon"></i>Keşfet</a>
+                    <a class="sidebar-link mb-1 sirala-link" href="#" data-sort="Trend Sorular"><i class="fas fa-chart-line sidebar-icon"></i>Trend Sorular</a>
+                    <a class="sidebar-link mb-1 sirala-link" href="#" data-sort="En İyi Cevaplar"><i class="fas fa-star sidebar-icon"></i>En İyi Cevaplar</a>
+                    <a class="sidebar-link mb-1" href="#" onclick="alert('Topluluklar özelliği yakında aktif olacak! 🚀'); return false;"><i class="fas fa-users sidebar-icon"></i>Topluluklar</a>
+                </nav>
+
+                <h6 class="text-muted fw-bold mb-3 ms-2" style="font-size: 0.75rem; letter-spacing: 1px;">KONULAR</h6>
+                <nav id="kategoriListesi" class="nav flex-column mb-4">
+                    <div class="text-center text-muted small my-2">
+                        <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div> Yükleniyor...
+                    </div>
+                </nav>
+
+                <div class="right-card bg-light border-0">
+                    <h6 class="fw-bold mb-3" style="font-size: 0.85rem;">Bugünün En Faydalı Yazarı</h6>
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="https://ui-avatars.com/api/?name=Ece+Demir&background=random" class="rounded-circle me-2" width="36" height="36">
+                        <div>
+                            <div class="fw-bold text-dark" style="font-size: 0.9rem;">Ece Demir</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">8 cevap • %98 fayda</div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-sm btn-outline-primary w-100 fw-bold" style="border-radius: 8px;">Profilini Gör &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7 px-lg-4">
+
+            <div class="mb-5 mt-2">
+                <h1 class="hero-title">Merak ettiğin her şeyi sor.</h1>
+                <h1 class="hero-title hero-title-blue mb-4">Gerçek insanlardan kaliteli cevaplar al.</h1>
+
+                <form class="main-search-box d-flex align-items-center mb-4">
+                    <input type="text" class="form-control main-search-input flex-grow-1 ps-3" placeholder="Bugün ne öğrenmek istiyorsun?">
+                    <button type="button" class="main-search-btn px-4"><i class="fas fa-arrow-right"></i></button>
+                </form>
+
+                <div class="d-flex align-items-center flex-wrap">
+                    <span class="text-muted fw-bold me-3" style="font-size: 0.9rem;">Popüler konular:</span>
+                    <a href="#" class="topic-pill mb-2">Yapay Zeka</a>
+                    <a href="#" class="topic-pill mb-2">Yazılım</a>
+                    <a href="#" class="topic-pill mb-2">Kariyer</a>
+                    <a href="#" class="topic-pill mb-2">Üniversite</a>
+                    <a href="#" class="topic-pill mb-2">Tasarım</a>
+                    <a href="#" class="text-muted ms-2 text-decoration-none fw-bold"><i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-end border-bottom mb-4">
+                <ul class="nav nav-tabs border-0 mb-0">
+                    <li class="nav-item"><a class="nav-link active sirala-link" href="#" data-sort="Popüler">Popüler</a></li>
+                    <li class="nav-item"><a class="nav-link sirala-link" href="#" data-sort="Yeni Sorular">Yeni Sorular</a></li>
+                    <li class="nav-item"><a class="nav-link sirala-link" href="#" data-sort="En İyi Cevaplar">En İyi Cevaplar</a></li>
+                </ul>
+                <div class="pb-2">
+                    <button class="btn btn-sm btn-light border fw-bold text-secondary" style="border-radius: 8px;">Tümü <i class="fas fa-chevron-down ms-1"></i></button>
+                </div>
+            </div>
+
+            <div id="soruListesi">
+                <div class="text-center my-5 py-5"><div class="spinner-border text-primary" role="status"></div></div>
+            </div>
+
+            <div class="right-card mt-4 d-flex justify-content-between align-items-center bg-light border-primary border-opacity-25 border-2">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded p-3 me-3"><i class="fas fa-comment-dots fs-4"></i></div>
+                    <div>
+                        <h5 class="fw-bold mb-1">Sen de sor, topluluğa katkıda bulun!</h5>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">Soruların, bildiklerin ve deneyimlerin başkalarına ışık olabilir.</p>
+                    </div>
+                </div>
+                <a href="/Home/AskQuestion" class="btn btn-primary fw-bold px-4" style="border-radius: 8px;">Soru Sor <i class="fas fa-arrow-up ms-1" style="transform: rotate(45deg);"></i></a>
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 d-none d-lg-block ps-4">
+            <div class="sticky-top" style="top: 100px;">
+
+                <div class="right-card mb-4 shadow-sm">
+                    <h6 class="fw-bold mb-4 d-flex align-items-center"><i class="fas fa-fire text-danger fs-5 me-2"></i>Bugün Trend Olanlar</h6>
+                    <div id="trendSorularAlani">
+                        <div class="text-center text-muted small py-3"><div class="spinner-border spinner-border-sm me-2"></div> Yükleniyor...</div>
+                    </div>
+                    <a href="#" class="text-primary text-decoration-none fw-bold mt-3 d-block sirala-link" data-sort="Trend Sorular" style="font-size: 0.85rem;">Tüm trendleri gör <i class="fas fa-chevron-right ms-1" style="font-size: 0.7rem;"></i></a>
+                </div>
+
+                <div class="right-card mb-4">
+                    <h6 class="fw-bold mb-4 d-flex align-items-center"><i class="fas fa-medal text-warning fs-5 me-2"></i>En Aktif Katkıda Bulunanlar</h6>
+                    <div id="aktifYazarlarAlani">
+                        <div class="text-center text-muted small py-3"><div class="spinner-border spinner-border-sm me-2"></div> Yükleniyor...</div>
+                    </div>
+                    <a href="#" class="text-primary text-decoration-none fw-bold mt-3 d-block sirala-link" data-sort="En İyi Cevaplar" style="font-size: 0.85rem;">Tümü <i class="fas fa-chevron-down ms-1" style="font-size: 0.7rem;"></i></a>
+                </div>
+
+                <div class="dark-promo-card shadow">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-white text-dark border-0" style="font-size: 0.7rem; font-weight: 800;">Haftanın Sorusu</span>
+                        <div class="text-white-50"><i class="far fa-square"></i> <i class="fas fa-expand ms-1"></i></div>
+                    </div>
+
+                    <div id="haftaninSorusuAlani">
+                        <h5 class="fw-bold mb-4 text-white" style="line-height: 1.4;"><div class="spinner-grow spinner-grow-sm text-light"></div> Yükleniyor...</h5>
+                    </div>
+
+                    <a href="#" id="btnHaftaninSorusu" class="btn btn-primary fw-bold w-100" style="border-radius: 8px;">Görüşünü Paylaş</a>
+                    <i class="fas fa-question-circle position-absolute text-white" style="font-size: 5rem; opacity: 0.1; right: -10px; bottom: -10px;"></i>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <hr class="mt-5 mb-0 opacity-10">
+    <div class="row pt-4 pb-2">
+        <div class="col-md-3">
+            <div class="footer-feature">
+                <div class="feature-icon"><i class="fas fa-check-double"></i></div>
+                <div><h6 class="fw-bold mb-1 text-dark">Kaliteli İçerik</h6><p class="text-muted small mb-0">Topluluk denetimi ve gelişmiş puanlama sistemi</p></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="footer-feature">
+                <div class="feature-icon bg-success bg-opacity-10 text-success"><i class="fas fa-user-graduate"></i></div>
+                <div><h6 class="fw-bold mb-1 text-dark">Uzman Cevaplar</h6><p class="text-muted small mb-0">Uzman rozetli kullanıcılardan en iyi cevaplar</p></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="footer-feature">
+                <div class="feature-icon bg-warning bg-opacity-10 text-warning"><i class="fas fa-shield-alt"></i></div>
+                <div><h6 class="fw-bold mb-1 text-dark">Güvenilir Kaynaklar</h6><p class="text-muted small mb-0">Kaynak gösterimi ve doğruluk kontrolü</p></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="footer-feature">
+                <div class="feature-icon bg-danger bg-opacity-10 text-danger"><i class="fas fa-heart"></i></div>
+                <div><h6 class="fw-bold mb-1 text-dark">Topluluk Gücü</h6><p class="text-muted small mb-0">Birlikte öğrenir, birlikte büyürüz</p></div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    var tumSorular = [];
+
+    $(document).ready(function () {
+        var token = localStorage.getItem("token");
+        var isLoggedIn = token !== null && token !== "";
+
+        // 1. Kategorileri Getir
+        $.ajax({
+            url: "https://localhost:7152/api/Categories",
+            type: "GET",
+            success: function (kategoriler) {
+                var kategoriHtml = `
+                    <a class="sidebar-link mb-1 kategori-filtre active" href="#" data-id="0">
+                        <i class="fas fa-layer-group sidebar-icon text-primary"></i>Tüm Konular
+                    </a>
+                `;
+                var ikonlar = ["fa-laptop-code", "fa-briefcase", "fa-robot", "fa-paint-brush", "fa-flask", "fa-chart-line"];
+
+                $.each(kategoriler, function (index, kategori) {
+                    var ikon = ikonlar[index % ikonlar.length];
+                    kategoriHtml += `
+                        <a class="sidebar-link mb-1 kategori-filtre" href="#" data-id="${kategori.id}">
+                            <i class="fas ${ikon} sidebar-icon text-secondary"></i>${kategori.name}
+                        </a>
+                    `;
+                });
+                $("#kategoriListesi").html(kategoriHtml);
+            }
+        });
+
+        // 2. Soruları Getir ve Sağ Menüyü Doldur
+        $.ajax({
+            url: "https://localhost:7152/api/Questions",
+            type: "GET",
+            success: function (data) {
+                tumSorular = data.map((s, index) => {
+                    return {
+                        ...s,
+                        fakeVote: Math.floor(Math.random() * 150) + 10,
+                        fakeAnswers: Math.floor(Math.random() * 40),
+                        fakeViews: Math.floor(Math.random() * 5000) + 500,
+                        fakeAuthor: index % 2 == 0 ? "Ahmet Yılmaz" : "Ece Demir",
+                        isOwner: isLoggedIn ? (index % 2 == 0) : false
+                    };
+                });
+
+                tumSorular.sort((a, b) => b.id - a.id);
+                sorulariEkranaBas(tumSorular, isLoggedIn);
+                sagSutunuDoldur(tumSorular); // Sağ menüyü canlandıran kod
+            }
+        });
+
+        // 3. Kategori Tıklaması
+        $(document).on("click", ".kategori-filtre", function(e) {
+            e.preventDefault();
+            $(".kategori-filtre").removeClass("active");
+            $(".sidebar-icon").removeClass("text-primary").addClass("text-secondary");
+
+            $(this).addClass("active");
+            $(this).find(".sidebar-icon").removeClass("text-secondary").addClass("text-primary");
+
+            var secilenId = $(this).data("id");
+            if(secilenId == 0) {
+                sorulariEkranaBas(tumSorular, isLoggedIn);
+            } else {
+                var filtrelenmis = tumSorular.filter(s => s.categoryId == secilenId);
+                sorulariEkranaBas(filtrelenmis, isLoggedIn);
+            }
+        });
+
+        // 4. Arama
+        $(".main-search-btn").click(function(e) { e.preventDefault(); aramaYap(); });
+        $(".main-search-box").submit(function(e) { e.preventDefault(); aramaYap(); });
+
+        function aramaYap() {
+            var aranan = $(".main-search-input").val().toLowerCase().trim();
+            if (aranan === "") { sorulariEkranaBas(tumSorular, isLoggedIn); return; }
+            var sonuclar = tumSorular.filter(s => s.title.toLowerCase().includes(aranan) || s.content.toLowerCase().includes(aranan));
+            sorulariEkranaBas(sonuclar, isLoggedIn);
+        }
+
+        // 5. TÜM SIRALAMA VE YÖNLENDİRME BUTONLARI (Videodaki çalışmayan linklerin şifası)
+        $(document).on("click", ".sirala-link", function(e) {
+            e.preventDefault();
+            var sekmeAdi = $(this).data("sort");
+
+            // Görsel güncellemeler (Tıklanan yerin rengini ayarla)
+            if($(this).hasClass("nav-link")) {
+                $(".nav-tabs .nav-link").removeClass("active");
+                $(this).addClass("active");
+            } else if ($(this).hasClass("sidebar-link")) {
+                $(".sidebar-link").removeClass("active");
+                $(".sidebar-icon").removeClass("text-primary").addClass("text-secondary");
+                $(this).addClass("active");
+                $(this).find(".sidebar-icon").removeClass("text-secondary").addClass("text-primary");
+            }
+
+            // Seçilen kritere göre soruları sırala
+            var siraliSorular = [...tumSorular];
+            if (sekmeAdi === "Popüler" || sekmeAdi === "Trend Sorular") {
+                siraliSorular.sort((a, b) => b.fakeViews - a.fakeViews);
+            } else if (sekmeAdi === "Yeni Sorular") {
+                siraliSorular.sort((a, b) => b.id - a.id);
+            } else if (sekmeAdi === "En İyi Cevaplar") {
+                siraliSorular.sort((a, b) => b.fakeVote - a.fakeVote);
+            }
+
+            sorulariEkranaBas(siraliSorular, isLoggedIn);
+
+            // Sağ menüdeki "Tümü" gibi linklere basıldıysa, kullanıcıyı soruların üstüne kaydır
+            if(!$(this).hasClass("nav-link") && !$(this).hasClass("sidebar-link")) {
+                $("html, body").animate({ scrollTop: $("#soruListesi").offset().top - 150 }, "fast");
+            }
+        });
+
+    });
+
+    // SAĞ SÜTUNU DOLDURAN FONKSİYON
+    function sagSutunuDoldur(sorular) {
+        if (!sorular || sorular.length === 0) return;
+
+        var trendler = [...sorular].sort((a, b) => b.fakeViews - a.fakeViews).slice(0, 3);
+        var trendHtml = "";
+        $.each(trendler, function(index, s) {
+            trendHtml += `
+                <div class="d-flex mb-3">
+                    <span class="text-muted fw-bold me-3 bg-light rounded-circle text-center" style="width: 24px; height: 24px; line-height: 24px;">${index + 1}</span>
+                    <div>
+                        <a href="/Home/QuestionDetail/${s.id}" class="text-dark fw-bold text-decoration-none" style="font-size: 0.9rem;">${s.title.length > 50 ? s.title.substring(0, 50) + "..." : s.title}</a>
+                        <div class="text-muted mt-1" style="font-size: 0.8rem;">${s.fakeAnswers} yanıt • ${(s.fakeViews / 1000).toFixed(1)}k okunma</div>
+                    </div>
+                </div>
+            `;
+        });
+        $("#trendSorularAlani").html(trendHtml);
+
+        var yazarPuanlari = {};
+        sorular.forEach(s => {
+            if(!yazarPuanlari[s.fakeAuthor]) yazarPuanlari[s.fakeAuthor] = 0;
+            yazarPuanlari[s.fakeAuthor] += s.fakeVote;
+        });
+
+        var siraliYazarlar = Object.keys(yazarPuanlari).map(isim => { return { ad: isim, puan: yazarPuanlari[isim] }; }).sort((a, b) => b.puan - a.puan).slice(0, 3);
+        var yazarlarHtml = "";
+        var madalyaRenkleri = ["text-warning", "text-muted", "text-danger"];
+
+        $.each(siraliYazarlar, function(index, yazar) {
+            yazarlarHtml += `
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="d-flex align-items-center">
+                        <span class="${madalyaRenkleri[index] || 'text-muted'} fw-bold me-2" style="width: 15px;">${index + 1}</span>
+                        <img src="https://ui-avatars.com/api/?name=${yazar.ad.replace(' ', '+')}&background=random" class="rounded-circle me-2" width="28" height="28">
+                        <span class="fw-bold text-dark" style="font-size: 0.85rem;">${yazar.ad}</span>
+                    </div>
+                    <span class="text-muted fw-bold" style="font-size: 0.75rem;">${yazar.puan} puan</span>
+                </div>
+            `;
+        });
+        yazarlarHtml += `
+            <div class="d-flex align-items-center justify-content-between mb-2 bg-primary bg-opacity-10 p-2 rounded">
+                <div class="d-flex align-items-center">
+                    <span class="text-primary fw-bold me-2" style="width: 15px;">-</span>
+                    <img src="https://ui-avatars.com/api/?name=Nilüfer+Yurdakul&background=0056d2&color=fff" class="rounded-circle me-2" width="28" height="28">
+                    <span class="fw-bold text-primary" style="font-size: 0.85rem;">Sen</span>
+                </div>
+                <span class="text-primary fw-bold" style="font-size: 0.75rem;">Yükselişte <i class="fas fa-level-up-alt ms-1"></i></span>
+            </div>
+        `;
+        $("#aktifYazarlarAlani").html(yazarlarHtml);
+
+        var haftaninSorusu = [...sorular].sort((a, b) => b.fakeAnswers - a.fakeAnswers)[0];
+        if(haftaninSorusu) {
+            $("#haftaninSorusuAlani").html(`
+                <a href="/Home/QuestionDetail/${haftaninSorusu.id}" class="text-decoration-none">
+                    <h5 class="fw-bold mb-4 text-white" style="line-height: 1.4;">${haftaninSorusu.title.length > 60 ? haftaninSorusu.title.substring(0, 60) + "..." : haftaninSorusu.title}</h5>
+                </a>
+            `);
+            // YENİ: "Görüşünü Paylaş" butonu artık gerçek bir linke dönüştü!
+            $("#btnHaftaninSorusu").attr("href", "/Home/QuestionDetail/" + haftaninSorusu.id);
+        }
+    }
+
+    function sorulariEkranaBas(soruDizisi, isLoggedIn) {
+        if (!soruDizisi || soruDizisi.length === 0) {
+            $("#soruListesi").html(`
+                <div class="text-center my-5 py-5 bg-light rounded" style="border: 1px dashed #d0d5dd;">
+                    <i class="fas fa-ghost fs-1 text-muted mb-3 opacity-25"></i>
+                    <h5 class="text-muted fw-bold">Bu kritere uygun soru bulunamadı.</h5>
+                    <p class="text-muted small">Farklı bir arama yapmayı deneyin veya bu konuda ilk soruyu siz sorun.</p>
+                </div>
+            `);
+            return;
+        }
+
+        var htmlIcerik = "";
+        $.each(soruDizisi, function (index, soru) {
+            var menuIcerik = "";
+            if (soru.isOwner) {
+                menuIcerik = `
+                    <li><a class="dropdown-item fw-bold text-secondary py-2" href="/Home/EditQuestion/${soru.id}"><i class="fas fa-pen me-2"></i> Düzenle</a></li>
+                    <li><a class="dropdown-item fw-bold text-danger py-2" href="#" onclick="soruSil(${soru.id}); return false;"><i class="fas fa-trash-alt me-2"></i> Sil</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                `;
+            } else if (isLoggedIn && !soru.isOwner) {
+                menuIcerik = `<li><a class="dropdown-item fw-bold text-secondary py-2" href="#"><i class="fas fa-flag me-2"></i> Şikayet Et</a></li><li><hr class="dropdown-divider"></li>`;
+            }
+            menuIcerik += `<li><a class="dropdown-item fw-bold text-secondary py-2" href="#"><i class="fas fa-link me-2"></i> Bağlantıyı Kopyala</a></li>`;
+
+            htmlIcerik += `
+                <div class="question-card mb-4 shadow-sm position-relative">
+                    <div class="dropdown position-absolute" style="right: 15px; top: 15px; z-index: 10;">
+                        <button class="btn btn-sm text-muted border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: transparent;">
+                            <i class="fas fa-ellipsis-v fs-5 px-2"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 10px;">${menuIcerik}</ul>
+                    </div>
+
+                    <div class="d-flex mt-2">
+                        <div class="vote-box me-3 mt-1 d-none d-sm-block">
+                            <i class="fas fa-chevron-up vote-arrow d-block"></i>
+                            <div class="vote-count">${soru.fakeVote}</div>
+                            <i class="fas fa-chevron-down vote-arrow d-block"></i>
+                        </div>
+
+                        <div class="flex-grow-1 pe-4">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <h4 class="fw-bold mb-0" style="font-size: 1.15rem; line-height: 1.4;">
+                                    <a href="/Home/QuestionDetail/${soru.id}" class="text-dark text-decoration-none">${soru.title}</a>
+                                </h4>
+                                ${soru.fakeVote > 100 ? '<span class="expert-badge ms-2 d-none d-md-inline-block">Uzman Cevabı</span>' : ''}
+                            </div>
+
+                            <div class="d-flex flex-wrap align-items-center mt-2 mb-3">
+                                <span class="tag-badge me-2 mb-1">Kategori: ${soru.categoryId}</span>
+                                <span class="text-muted mb-1" style="font-size: 0.8rem;"><i class="fas fa-circle me-1" style="font-size: 0.3rem; vertical-align: middle;"></i> ${(soru.fakeViews / 1000).toFixed(1)}k okuma</span>
+                            </div>
+
+                            <p class="text-muted mb-3" style="font-size: 0.95rem; line-height: 1.5;">${soru.content.length > 120 ? soru.content.substring(0, 120) + "..." : soru.content}</p>
+
+                            <div class="d-flex justify-content-between align-items-center text-muted" style="font-size: 0.85rem;">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-3"><i class="far fa-comment-alt me-1"></i>${soru.fakeAnswers} cevap</span>
+                                    <span class="me-3 d-none d-sm-inline"><i class="far fa-eye me-1"></i>${(soru.fakeViews / 1000).toFixed(1)}K görüntülenme</span>
+                                    <span class="text-success fw-bold"><i class="far fa-thumbs-up me-1"></i>%94 faydalı</span>
+                                </div>
+                                <div class="fw-bold text-dark d-none d-md-block">
+                                    <span class="text-muted fw-normal me-1">Katkıda bulunan •</span> ${soru.fakeAuthor} <i class="fas fa-check-circle text-primary ms-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        $("#soruListesi").html(htmlIcerik);
+    }
+
+    function soruSil(id) {
+        if (confirm("Bu soruyu silmek istediğinize emin misiniz?")) {
+            $.ajax({
+                url: "https://localhost:7152/api/Questions/" + id,
+                type: "DELETE",
+                headers: { "Authorization": "Bearer " + localStorage.getItem("token") },
+                success: function () { alert("Silindi!"); window.location.reload(); },
+                error: function () { alert("Hata oluştu."); }
+            });
+        }
+    }
+</script>

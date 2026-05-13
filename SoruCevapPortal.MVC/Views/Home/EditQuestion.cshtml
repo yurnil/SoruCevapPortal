@@ -1,0 +1,155 @@
+﻿@{
+    ViewData["Title"] = "Soru Düzenle - aklımatakıldı";
+}
+
+<style>
+    body {
+        background-color: #fcfcfd;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .ask-card {
+        border: 1px solid #eaecf0;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 10px 25px rgba(16, 24, 40, 0.05);
+    }
+
+    .ask-title {
+        font-weight: 800;
+        color: #101828;
+        letter-spacing: -0.5px;
+        font-size: 1.8rem;
+    }
+
+    .custom-input {
+        border-radius: 8px;
+        border: 1px solid #d0d5dd;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+        padding: 12px 15px;
+        font-size: 1rem;
+        color: #101828;
+    }
+
+        .custom-input:focus {
+            border-color: #0056d2;
+            box-shadow: 0 0 0 4px rgba(0, 86, 210, 0.1);
+            outline: none;
+        }
+
+    .submit-btn {
+        background-color: #0056d2;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 12px 24px;
+        color: white;
+        transition: 0.2s;
+        font-size: 1.05rem;
+    }
+
+        .submit-btn:hover {
+            background-color: #0044a8;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 86, 210, 0.2);
+        }
+</style>
+
+<div class="container d-flex justify-content-center" style="min-height: 85vh; padding-top: 100px; padding-bottom: 50px;">
+    <div class="col-12 col-lg-8">
+        <div class="ask-card p-4 p-md-5">
+
+            <div class="d-flex align-items-center border-bottom pb-4 mb-4">
+                <div class="bg-secondary bg-opacity-10 text-secondary rounded d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                    <i class="fas fa-edit fs-5"></i>
+                </div>
+                <div>
+                    <h2 class="ask-title mb-1">Sorunu Düzenle</h2>
+                    <p class="text-muted mb-0" style="font-size: 0.95rem;">Bir hata yaptıysan veya eklemek istediğin bir şey varsa buradan güncelleyebilirsin.</p>
+                </div>
+            </div>
+
+            <form id="editQuestionForm">
+                <div class="mb-4">
+                    <label for="title" class="form-label fw-bold" style="color: #344054; font-size: 0.95rem;">Soru Başlığı</label>
+                    <input type="text" class="form-control custom-input" id="title" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="categoryId" class="form-label fw-bold" style="color: #344054; font-size: 0.95rem;">Kategori</label>
+                    <select class="form-select custom-input" id="categoryId" required>
+                        <option value="1">Yazılım & Teknoloji</option>
+                        <option value="2">Yapay Zeka</option>
+                        <option value="3">Tasarım</option>
+                        <option value="4">Kariyer & Eğitim</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="content" class="form-label fw-bold" style="color: #344054; font-size: 0.95rem;">Soru Detayları</label>
+                    <textarea class="form-control custom-input" id="content" rows="7" required></textarea>
+                </div>
+
+                <div id="errorMessage" class="text-danger d-none mb-4 fw-bold bg-danger bg-opacity-10 p-3 rounded">
+                    <i class="fas fa-exclamation-circle me-1"></i> Güncelleme başarısız oldu.
+                </div>
+
+                <div class="d-flex justify-content-end pt-2 border-top mt-4">
+                    <a href="/Home/Index" class="btn btn-light fw-bold me-3 border text-secondary" style="border-radius: 8px; padding: 12px 24px;">Vazgeç</a>
+                    <button class="btn submit-btn" id="submitButton" type="submit">
+                        <i class="fas fa-save me-2"></i> Değişiklikleri Kaydet
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var questionId = @ViewBag.QuestionId; 
+        var token = localStorage.getItem("token");
+
+        $.ajax({
+            url: "https://localhost:7152/api/Questions/" + questionId,
+            type: "GET",
+            success: function (soru) {
+                $("#title").val(soru.title);
+                $("#categoryId").val(soru.categoryId);
+                $("#content").val(soru.content);
+            },
+            error: function () {
+                alert("Sorunun eski bilgileri getirilemedi!");
+            }
+        });
+
+        $("#editQuestionForm").submit(function (e) {
+            e.preventDefault();
+
+            var updatedData = {
+                id: questionId,
+                title: $("#title").val(),
+                categoryId: parseInt($("#categoryId").val()),
+                content: $("#content").val()
+            };
+
+            $.ajax({
+                url: "https://localhost:7152/api/Questions/" + questionId,
+                type: "PUT",
+                contentType: "application/json",
+                headers: { "Authorization": "Bearer " + token },
+                data: JSON.stringify(updatedData),
+                success: function () {
+                    alert("Sorunuz başarıyla güncellendi!");
+                    window.location.href = "/Home/Index"; 
+                },
+                error: function (err) {
+                    console.log(err);
+                    $("#errorMessage").removeClass("d-none");
+                }
+            });
+        });
+    });
+</script>
