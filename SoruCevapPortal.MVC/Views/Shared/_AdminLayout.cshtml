@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html lang="tr" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="~/adminAssets/" data-template="vertical-menu-template-free">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Yönetim Paneli - aklımatakıldı.</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/adminAssets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/adminAssets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/adminAssets/css/demo.css" />
+
+    <link rel="stylesheet" href="~/adminAssets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <script src="~/adminAssets/vendor/js/helpers.js"></script>
+    <script src="~/adminAssets/js/config.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+                <div class="app-brand demo">
+                    <a href="/Admin/Index" class="app-brand-link">
+                        <span class="app-brand-text demo menu-text fw-bolder ms-2" style="text-transform: lowercase;">aklımatakıldı.</span>
+                    </a>
+                </div>
+                <div class="menu-inner-shadow"></div>
+                <ul class="menu-inner py-1">
+                    <li class="menu-header small text-uppercase"><span class="menu-header-text">Sistem Yönetimi</span></li>
+
+                    <li class="menu-item active">
+                        <a href="/Admin/Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            <div>Özet Paneli</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Admin/Categories" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-category"></i>
+                            <div>Kategoriler</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-message-dots"></i>
+                            <div>Sorular & Cevaplar</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-user"></i>
+                            <div>Kullanıcılar</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-header small text-uppercase"><span class="menu-header-text">Diğer</span></li>
+                    <li class="menu-item">
+                        <a href="/Home/Index" class="menu-link text-danger">
+                            <i class="menu-icon tf-icons bx bx-log-out-circle"></i>
+                            <div>Siteye Dön</div>
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+            <div class="layout-page">
+
+                <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+                    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)"><i class="bx bx-menu bx-sm"></i></a>
+                    </div>
+                    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                        <div class="navbar-nav align-items-center">
+                            <span class="fw-bold fs-5">Yönetici Paneli</span>
+                        </div>
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <img src="https://ui-avatars.com/api/?name=Admin&background=696cff&color=fff" class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+
+                        @RenderBody()
+
+                    </div>
+                    <div class="content-backdrop fade"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+
+    <script src="~/adminAssets/vendor/libs/popper/popper.js"></script>
+    <script src="~/adminAssets/vendor/js/bootstrap.js"></script>
+    <script src="~/adminAssets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="~/adminAssets/vendor/js/menu.js"></script>
+    <script src="~/adminAssets/js/main.js"></script>
+</body>
+</html>

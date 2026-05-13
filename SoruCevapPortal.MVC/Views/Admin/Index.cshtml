@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Özet Paneli";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-3 col-md-6 col-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title d-flex align-items-start justify-content-between">
+                    <div class="avatar flex-shrink-0">
+                        <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-question-mark"></i></span>
+                    </div>
+                </div>
+                <span class="fw-semibold d-block mb-1">Toplam Soru</span>
+                <h3 class="card-title mb-2" id="totalQuestions">...</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title d-flex align-items-start justify-content-between">
+                    <div class="avatar flex-shrink-0">
+                        <span class="avatar-initial rounded bg-label-success"><i class="bx bx-message-rounded-dots"></i></span>
+                    </div>
+                </div>
+                <span class="fw-semibold d-block mb-1">Verilen Cevap</span>
+                <h3 class="card-title mb-2" id="totalAnswers">...</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title d-flex align-items-start justify-content-between">
+                    <div class="avatar flex-shrink-0">
+                        <span class="avatar-initial rounded bg-label-warning"><i class="bx bx-category"></i></span>
+                    </div>
+                </div>
+                <span class="fw-semibold d-block mb-1">Kategori</span>
+                <h3 class="card-title mb-2" id="totalCategories">...</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title d-flex align-items-start justify-content-between">
+                    <div class="avatar flex-shrink-0">
+                        <span class="avatar-initial rounded bg-label-danger"><i class="bx bx-show"></i></span>
+                    </div>
+                </div>
+                <span class="fw-semibold d-block mb-1">Görüntülenme</span>
+                <h3 class="card-title mb-2" id="totalViews">...</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h5 class="card-header">Son Eklenen Sorular</h5>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Soru Başlığı</th>
+                    <th>Yazar</th>
+                    <th>Görüntülenme</th>
+                    <th>Cevaplar</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody id="latestQuestionsTable" class="table-border-bottom-0">
+                <tr><td colspan="5" class="text-center py-3">Veriler yükleniyor...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var token = localStorage.getItem("token");
+        if (!token) {
+            window.location.href = "/Auth/Login";
+            return;
+        }
+
+        $.ajax({
+            url: "https://localhost:7152/api/Categories",
+            type: "GET",
+            success: function (data) {
+                $("#totalCategories").text(data.length);
+            }
+        });
+
+        $.ajax({
+            url: "https://localhost:7152/api/Questions",
+            type: "GET",
+            success: function (data) {
+                $("#totalQuestions").text(data.length);
+
+                var toplamCevap = 0;
+                var toplamIzlenme = 0;
+
+                data.forEach(q => {
+                    toplamCevap += q.answerCount || 0;
+                    toplamIzlenme += q.viewCount || 0;
+                });
+
+                $("#totalAnswers").text(toplamCevap);
+                $("#totalViews").text(toplamIzlenme);
+
+                var sonSorular = data.sort((a, b) => b.id - a.id).slice(0, 5);
+                var tabloHtml = "";
+
+                $.each(sonSorular, function(i, soru) {
+                    tabloHtml += `
+                        <tr>
+                            <td><i class="bx bx-question-mark fa-lg text-primary me-3"></i> <strong>${soru.title}</strong></td>
+                            <td>${soru.authorName}</td>
+                            <td><span class="badge bg-label-primary me-1">${soru.viewCount} Okunma</span></td>
+                            <td>${soru.answerCount}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger"><i class="bx bx-trash me-1"></i> Sil</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                $("#latestQuestionsTable").html(tabloHtml);
+            }
+        });
+    });
+</script>
