@@ -217,17 +217,8 @@
                         <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div> Yükleniyor...
                     </div>
                 </nav>
-
-                <div class="right-card bg-light border-0">
-                    <h6 class="fw-bold mb-3" style="font-size: 0.85rem;">Bugünün En Faydalı Yazarı</h6>
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="https://ui-avatars.com/api/?name=Ece+Demir&background=random" class="rounded-circle me-2" width="36" height="36">
-                        <div>
-                            <div class="fw-bold text-dark" style="font-size: 0.9rem;">Ece Demir</div>
-                            <div class="text-muted" style="font-size: 0.75rem;">8 cevap • %98 fayda</div>
-                        </div>
-                    </div>
-                    <a href="#" class="btn btn-sm btn-outline-primary w-100 fw-bold" style="border-radius: 8px;">Profilini Gör &rarr;</a>
+                <div class="right-card bg-light border-0" id="gununYazariAlani">
+                    <div class="text-center text-muted small py-3"><div class="spinner-border spinner-border-sm"></div> Yükleniyor...</div>
                 </div>
             </div>
         </div>
@@ -499,16 +490,25 @@
         $("#trendSorularAlani").html(trendHtml);
 
         var yazarPuanlari = {};
+        var yazarCevaplari = {};
         sorular.forEach(s => {
-            if(!yazarPuanlari[s.authorName]) yazarPuanlari[s.authorName] = 0;
-            yazarPuanlari[s.authorName] += s.voteCount;
+            if(!yazarPuanlari[s.authorName]) {
+                yazarPuanlari[s.authorName] = 0;
+                yazarCevaplari[s.authorName] = 0;
+            }
+            var kazanilanPuan = (s.viewCount || 0) + ((s.answerCount || 0) * 10) + ((s.voteCount || 0) * 5);
+            yazarPuanlari[s.authorName] += kazanilanPuan;
+            yazarCevaplari[s.authorName] += (s.answerCount || 0);
         });
 
-        var siraliYazarlar = Object.keys(yazarPuanlari).map(isim => { return { ad: isim, puan: yazarPuanlari[isim] }; }).sort((a, b) => b.puan - a.puan).slice(0, 3);
+        var siraliYazarlar = Object.keys(yazarPuanlari).map(isim => {
+            return { ad: isim, puan: yazarPuanlari[isim], cevap: yazarCevaplari[isim] };
+        }).sort((a, b) => b.puan - a.puan);
+
         var yazarlarHtml = "";
         var madalyaRenkleri = ["text-warning", "text-muted", "text-danger"];
 
-        $.each(siraliYazarlar, function(index, yazar) {
+        $.each(siraliYazarlar.slice(0, 3), function(index, yazar) {
             yazarlarHtml += `
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div class="d-flex align-items-center">
@@ -516,21 +516,29 @@
                         <img src="https://ui-avatars.com/api/?name=${yazar.ad.replace(' ', '+')}&background=random" class="rounded-circle me-2" width="28" height="28">
                         <span class="fw-bold text-dark" style="font-size: 0.85rem;">${yazar.ad}</span>
                     </div>
-                    <span class="text-muted fw-bold" style="font-size: 0.75rem;">${yazar.puan} puan</span>
+                    <span class="text-success fw-bold" style="font-size: 0.75rem;">${yazar.puan} Puan</span>
                 </div>
             `;
         });
-        yazarlarHtml += `
-            <div class="d-flex align-items-center justify-content-between mb-2 bg-primary bg-opacity-10 p-2 rounded">
-                <div class="d-flex align-items-center">
-                    <span class="text-primary fw-bold me-2" style="width: 15px;">-</span>
-                    <img src="https://ui-avatars.com/api/?name=Nilüfer+Yurdakul&background=0056d2&color=fff" class="rounded-circle me-2" width="28" height="28">
-                    <span class="fw-bold text-primary" style="font-size: 0.85rem;">Sen</span>
-                </div>
-                <span class="text-primary fw-bold" style="font-size: 0.75rem;">Yükselişte <i class="fas fa-level-up-alt ms-1"></i></span>
-            </div>
-        `;
         $("#aktifYazarlarAlani").html(yazarlarHtml);
+
+        if (siraliYazarlar.length > 0) {
+            var kral = siraliYazarlar[0];
+            var solHtml = `
+                <h6 class="fw-bold mb-3" style="font-size: 0.85rem;">Bugünün En Faydalı Yazarı</h6>
+                <div class="d-flex align-items-center mb-3">
+                    <img src="https://ui-avatars.com/api/?name=${kral.ad.replace(' ', '+')}&background=random" class="rounded-circle me-2" width="36" height="36">
+                    <div>
+                        <div class="fw-bold text-dark" style="font-size: 0.9rem;">${kral.ad} <i class="fas fa-crown text-warning ms-1"></i></div>
+                        <div class="text-muted" style="font-size: 0.75rem;">${kral.puan} Etkileşim Puanı</div>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-sm btn-outline-primary w-100 fw-bold" style="border-radius: 8px;">Tebrik Et <i class="fas fa-star text-warning ms-1"></i></a>
+            `;
+            $("#gununYazariAlani").html(solHtml);
+        } else {
+            $("#gununYazariAlani").html('<div class="text-muted small">Henüz katkıda bulunan yok.</div>');
+        }
 
         var haftaninSorusu = [...sorular].sort((a, b) => b.answerCount - a.answerCount)[0];
         if(haftaninSorusu) {
